@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/Style.css">
+    <script src="https://kit.fontawesome.com/f8e1971d71.js" crossorigin="anonymous"></script>
+    <title>IoT Remote Lab - Sign-in</title>
+</head>
+
+<body>
+    <nav>
+        <div class="navbar">
+            <div class="icon">
+                <img src="./Documents/mic-white.png" alt="IoT Document" width="18">
+            </div>
+            <p>IoT Lab</p>
+        </div>
+    </nav>
+    <main>
+        <div class="Box2">
+            <header>
+                <div class="icon2">
+                    <img src="./Documents/mic-black.png" alt="IoT Document">
+                </div>
+                <div class="part1">
+                    <h2>Welcome to IoT Lab</h2>
+                </div>
+                <p>Remote Arduino Programming Platform</p>
+            </header>
+            <div class="input-part">
+                <form id="loginForm" >
+                    <div class="info">
+                        <div class="mail-info">
+                            <label for="email"><b>Email</b></label><br>
+                            <input type="email" id="email" name="email" autocomplete="email" placeholder="Enter your email" >
+                            <p class="error_message" id="error_message1"></p>
+                        </div>
+                        <div class="password-info">
+                            <label for="password"><b>Password</b> </label><br>
+                            <div class="pass_show">
+                                <input type="password" id="password" name="password" minlength="8" placeholder="Enter your password" required><br>
+                                <div class="show" id="show_pass"><img src="./Documents/eye-slash-solid.svg" alt="eye" width="18"></div>
+                            </div>
+                            <p class="error_message" id="error_message2"></p>
+                        </div>
+                        <div class="role-selection">
+                            <label for="role"><b>Role</b></label><br>
+                            <select id="role"  name="role" required>
+                                <option value="" disabled selected>Select your role</option>
+                                <option value="student">Student</option>
+                                <option value="teacher">Teacher</option>
+                            </select>
+                        </div>
+                        <div class="check-remm">
+                            <!--<div class="check-box">
+                                <input type="checkbox" id="agree" name="agree" required>
+                                <label for="agree">Remember me</label>
+                            </div>
+                            <div class="forgot_pass">
+                                <a style="color: #9FEF00;" href="./Account-verification.html">Forgot password?</a>
+                            </div>-->
+                        </div>
+                    </div>
+                    <button type="submit" id="Sign_In">Sign In</button>
+                </form>
+            </div>
+            <!--<div class="last-part">
+                <p id="D_have_acc">
+                    Don't have an account?
+                </p>
+                <p id="sign"><a style="color: #9FEF00;" href="/register">Sign up</a></p>
+            </div>-->
+
+        </div>
+    </main>
+    <script src="./auth/login.js"></script>
+</body>
+
+</html>

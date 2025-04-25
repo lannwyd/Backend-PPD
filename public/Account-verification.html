@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./styles/Account-ver.css">
+    <script src="https://kit.fontawesome.com/f8e1971d71.js" crossorigin="anonymous"></script>
+    <title>IoT Remote Lab - Account verification</title>
+</head>
+<body>
+<nav>
+    <div class="navbar">
+        <p id="p1"><img src="./Documents/mic-white.png" alt="IoT Document" width="18">IoT Lab</p>
+    </div>
+</nav>
+<main>
+    <div class="Box1">
+        <header>
+            <div class="icon2">
+                <i class="fa-solid fa-microchip"></i>
+            </div>
+            <div class="part1">
+                <h2>Verify Your Email</h2>
+            </div>
+            <div class="part2">
+                <p>We've sent a 6-digit verification code to <span id="userEmail"></span></p>
+            </div>
+        </header>
+        <form id="verificationForm" class="input-part">
+            <input type="hidden" id="email">
+            <input type="hidden" id="role">
+
+            <div class="code-container">
+                <label for="code">Enter verification code</label>
+                <div class="inputs" id="codeInputs">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" oninput="moveToNext(this)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" oninput="moveToNext(this)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" oninput="moveToNext(this)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" oninput="moveToNext(this)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" oninput="moveToNext(this)">
+                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" oninput="moveToNext(this)">
+                </div>
+                <input type="hidden" id="fullCode" name="code">
+            </div>
+
+            <p id="errorMessage" class="error-message"></p>
+
+            <p id="Resend">Didn't receive the code? <sup style="color: #9FEF00;">Resend in <span id="timer">0:59</span></sup></p>
+
+            <button type="submit" id="verifybtn">Verify Email</button>
+        </form>
+        <div class="last-part">
+            <p id="sign"><a style="color: #9FEF00;" href="login.html">Change email address</a></p>
+        </div>
+    </div>
+</main>
+<script src="./auth/Acc_ver.js"></script>
+</body>
+</html>
