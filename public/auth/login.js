@@ -1,47 +1,64 @@
-
 document.addEventListener('DOMContentLoaded', function() {
-    const emailInput = document.getElementById('email');
-    const passwordInput = document.getElementById('password');
     const loginForm = document.getElementById('loginForm');
     const signInButton = document.getElementById('Sign_In');
     const errorMessage1 = document.getElementById('error_message1');
     const errorMessage2 = document.getElementById('error_message2');
+    const passwordInput = document.getElementById('password');
     const showPass = document.getElementById('show_pass');
-    const passwordField = document.getElementById('password');
-    const roleSelect = document.getElementById('role');
+    const eyeIcon = showPass.querySelector('img');
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     // Toggle password visibility
-    showPass.addEventListener('click', function () {
-        if (passwordField.type === 'password') {
-            passwordField.type = 'text';
-            showPass.innerHTML = '<img src="../Documents/eye-solid.svg" alt="eye" width="18">';
+    showPass.onclick = function() {
+        if (passwordInput.getAttribute('type') === 'password') {
+            passwordInput.setAttribute('type', 'text');
+            eyeIcon.setAttribute('src', './Documents/eye-solid.svg');
         } else {
-            passwordField.type = 'password';
-            showPass.innerHTML = '<img src="../Documents/eye-slash-solid.svg" alt="eye" width="18">';
+            passwordInput.setAttribute('type', 'password');
+            eyeIcon.setAttribute('src', './Documents/eye-slash-solid.svg');
         }
-    });
+    };
 
-    // Form submit handler
-    loginForm.addEventListener('submit', async function (e) {
+    // Remember me functionality
+    window.onload = function() {
+        if (localStorage.getItem('email')) {
+            document.getElementById('email').value = localStorage.getItem('email');
+            document.getElementById('password').value = localStorage.getItem('password');
+            document.getElementById('agree').checked = true;
+        }
+    };
+
+    loginForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        console.log("Form submitted");
 
         // Reset error messages
         errorMessage1.textContent = '';
         errorMessage2.textContent = '';
 
-        // Validate inputs
-        if (!emailInput.value.trim()) {
-            errorMessage1.textContent = 'Email is required';
+        const email = document.getElementById('email').value.trim();
+        const password = passwordInput.value;
+        const role = document.getElementById('role') ? document.getElementById('role').value : null;
+
+        // Validate email
+        if (email === '') {
+            errorMessage1.textContent = 'Please enter your email';
+            return;
+        } else if (!emailPattern.test(email)) {
+            errorMessage1.textContent = 'Please enter a valid email address';
             return;
         }
 
-        if (!passwordInput.value.trim()) {
-            errorMessage2.textContent = 'Password is required';
+        // Validate password
+        if (password === '') {
+            errorMessage2.textContent = 'Please enter your password';
+            return;
+        } else if (password.length < 8) {
+            errorMessage2.textContent = 'Password must be at least 8 characters long';
             return;
         }
 
-        if (!roleSelect.value) {
+        // Validate role if exists
+        if (role === null || role === '') {
             errorMessage1.textContent = 'Please select your role';
             return;
         }
@@ -50,42 +67,50 @@ document.addEventListener('DOMContentLoaded', function() {
             signInButton.disabled = true;
             signInButton.textContent = 'Signing in...';
 
+            // Remember me functionality
+            if (document.getElementById('agree').checked) {
+                localStorage.setItem('email', email);
+                localStorage.setItem('password', password);
+            } else {
+                localStorage.removeItem('email');
+                localStorage.removeItem('password');
+            }
+
+            // API call
             const response = await fetch('/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    email: emailInput.value.trim(),
-                    password: passwordInput.value,
-                    role: roleSelect.value
+                    email: email,
+                    password: password,
+                    role: role
                 }),
-                credentials: 'include' // This is crucial for cookies
+                credentials: 'include'
             });
 
-
-
             const data = await response.json();
-            console.log("Response data:", data);
 
-            // In login.js
             if (!response.ok) {
                 if (data.unverified) {
-                    localStorage.setItem('pendingEmail', emailInput.value.trim());
-                    localStorage.setItem('pendingRole', roleSelect.value);
-                    window.location.href = `/Account-verification.html`;
+                    localStorage.setItem('pendingEmail', email);
+                    localStorage.setItem('pendingRole', role);
+                    window.location.href = `/Account-verification.html?email=${encodeURIComponent(email)}&role=${role}`;
                     return;
                 }
                 throw new Error(data.error || 'Login failed');
             }
 
+            // Store token and redirect
             localStorage.setItem('token', data.token);
-            localStorage.setItem('userEmail', emailInput.value.trim());
-            localStorage.setItem('userRole', data.data.role); // Use the role from response
+            localStorage.setItem('userEmail', email);
+            localStorage.setItem('userRole', data.data.role);
 
             window.location.href = '/dashboard';
         } catch (error) {
             console.error('Login error:', error);
+            errorMessage1.textContent = error.message || 'Login failed. Please try again.';
         } finally {
             signInButton.disabled = false;
             signInButton.textContent = 'Sign In';

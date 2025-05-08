@@ -1,27 +1,25 @@
 import bcrypt from 'bcrypt';
+
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
-import Student from '../../models/student.js';
-import Teacher from '../../models/Teacher.js';
 import {sendEmail} from '../utils/email.js';
+import User from "../../models/User.js";
+import Role from "../../models/Role.js"; // Add this import
 
 
 const signToken = (id, role) => {
     return jwt.sign({
         id,
         role,
-        iat: Date.now() // issued at timestamp
+        iat: Date.now()
     }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN
     });
 };
 
 const createSendToken = (user, statusCode, res) => {
-    // More reliable role detection
-    const role = user.get('TeacherID') ? 'teacher' : 'student';
-    const userId = role === 'student' ? user.StudentID : user.TeacherID;
-
-    const token = signToken(userId, role);
+    const role = user.role_id === 2 ? 'teacher' : 'student';
+    const token = signToken(user.user_id, role);
 
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 3600 * 1000),
@@ -34,8 +32,8 @@ const createSendToken = (user, statusCode, res) => {
     res.cookie('jwt', token, cookieOptions);
 
     const userData = user.get({ plain: true });
-    delete userData.Password;
-    delete userData.Salt;
+    delete userData.password;
+    delete userData.salt;
 
     res.status(statusCode).json({
         status: 'success',
@@ -47,38 +45,52 @@ const createSendToken = (user, statusCode, res) => {
     });
 };
 
+
 export const register = async (req, res, next) => {
     try {
-        const { role, ...userData } = req.body;
-        let user;
+        const { first_name, last_name, email, password, role } = req.body;
 
-        if (role === 'student') {
-            user = await Student.create(userData);
-        } else if (role === 'teacher') {
-            user = await Teacher.create(userData);
-        } else {
+        // Validate input
+        if (!first_name || !last_name || !email || !password || !role) {
             return res.status(400).json({
                 status: 'error',
-                error: 'Invalid role specified',
-                message: 'Role must be either student or teacher'
+                error: 'All fields are required'
             });
         }
 
-        const verificationCode = user.verificationCode;
+        // Check if user already exists
+        const existingUser = await User.findOne({ where: { email } });
+        if (existingUser) {
+            return res.status(400).json({
+                status: 'error',
+                error: 'Email already in use'
+            });
+        }
 
+        // Create user
+        const user = await User.create({
+            first_name,
+            last_name,
+            email: email.toLowerCase(),
+            password,
+            role_id: role === 'teacher' ? 2 : 1, // Assuming 1=student, 2=teacher
+            is_verified: false
+        });
+
+        // Send verification email
         try {
             await sendEmail({
-                email: user.Email,
+                email: user.email,
                 subject: 'Your Verification Code',
-                message: `Your verification code is: <strong>${verificationCode}</strong><br>
-                It will expire in 1 hour.`
+                message: `Your verification code is: <strong>${user.verification_code}</strong><br>
+        It will expire in 1 hour.`
             });
 
             res.status(201).json({
                 status: 'success',
                 message: 'Verification code sent to email',
                 data: {
-                    email: user.Email,
+                    email: user.email,
                     role
                 }
             });
@@ -86,22 +98,11 @@ export const register = async (req, res, next) => {
             await user.destroy();
             return res.status(500).json({
                 status: 'error',
-                error: 'Failed to send verification email',
-                message: emailError.message
+                error: 'Failed to send verification email'
             });
         }
     } catch (error) {
         console.error('Registration error:', error);
-
-        // Handle Sequelize validation errors
-        if (error.name === 'SequelizeValidationError' || error.name === 'SequelizeUniqueConstraintError') {
-            return res.status(400).json({
-                status: 'error',
-                error: 'Validation failed',
-                messages: error.errors.map(err => err.message)
-            });
-        }
-
         res.status(400).json({
             status: 'error',
             error: 'Registration failed',
@@ -109,6 +110,67 @@ export const register = async (req, res, next) => {
         });
     }
 };
+
+export const verifyEmail = async (req, res, next) => {
+    try {
+        const { email, code } = req.body;
+
+        if (!email || !code) {
+            return res.status(400).json({ error: 'Email and code are required' });
+        }
+
+        const user = await User.findOne({ where: { email } });
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        if (user.is_verified) {
+            return res.status(400).json({ error: 'Email is already verified' });
+        }
+
+        // Check verification code
+        if (user.verification_code !== code.trim()) {
+            return res.status(400).json({ error: 'Invalid verification code' });
+        }
+
+        // Check expiration
+        if (new Date() > user.verification_token_expires) {
+            return res.status(400).json({ error: 'Verification code has expired' });
+        }
+
+        // Mark as verified
+        await user.update({
+            is_verified: true,
+            verification_code: null,
+            verification_token_expires: null
+        });
+
+        // Create token
+        const token = signToken(user.user_id, user.role_id === 2 ? 'teacher' : 'student');
+
+        res.status(200).json({
+            status: 'success',
+            token,
+            data: {
+                user: {
+                    user_id: user.user_id,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    email: user.email,
+                    role_id: user.role_id
+                },
+                role: user.role_id === 2 ? 'teacher' : 'student'
+            }
+        });
+    } catch (error) {
+        console.error('Verification error:', error);
+        res.status(500).json({
+            error: 'Email verification failed',
+            details: error.message
+        });
+    }
+};
+
 
 export const login = async (req, res, next) => {
     try {
@@ -118,18 +180,17 @@ export const login = async (req, res, next) => {
             return res.status(400).json({ error: 'Please provide email, password, and role' });
         }
 
-        let user;
-        if (role === 'student') {
-            user = await Student.findOne({
-                where: { Email: email.toLowerCase() }
-            });
-        } else if (role === 'teacher') {
-            user = await Teacher.findOne({
-                where: { Email: email.toLowerCase() }
-            });
-        } else {
-            return res.status(400).json({ error: 'Invalid role specified' });
-        }
+        // Find user by email with the correct include using the 'as' alias
+        const user = await User.findOne({
+            where: {
+                email: email.toLowerCase()
+            },
+            include: [{
+                model: Role,
+                as: 'role', // Add this line to match your association alias
+                attributes: ['role_id', 'role_label']
+            }]
+        });
 
         if (!user) {
             return res.status(401).json({ error: 'Incorrect email or password' });
@@ -141,14 +202,52 @@ export const login = async (req, res, next) => {
             return res.status(401).json({ error: 'Incorrect email or password' });
         }
 
-        if (!user.isVerified) {
+        // Check verification status
+        if (!user.is_verified) {
             return res.status(401).json({
                 error: 'Account not verified',
                 unverified: true
             });
         }
 
-        createSendToken(user, 200, res);
+        // Determine user's role from the associated Role model
+        const userRole = user.role.role_label.toLowerCase();
+
+        // Check if the user's role matches the requested role
+        if (userRole !== role.toLowerCase()) {
+            return res.status(403).json({
+                error: 'You do not have permission to access this role'
+            });
+        }
+
+        // Create token
+        const token = signToken(user.user_id, userRole);
+
+        // Set cookie
+        const cookieOptions = {
+            expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 3600 * 1000),
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production',
+            path: '/'
+        };
+
+        res.cookie('jwt', token, cookieOptions);
+
+        res.status(200).json({
+            status: 'success',
+            token,
+            data: {
+                user: {
+                    user_id: user.user_id,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    email: user.email,
+                    role_id: user.role_id
+                },
+                role: userRole
+            }
+        });
     } catch (error) {
         console.error('Login error:', error);
         res.status(500).json({
@@ -158,81 +257,29 @@ export const login = async (req, res, next) => {
     }
 };
 
-export const verifyEmail = async (req, res, next) => {
-    try {
-        const { email, code, role } = req.body;
-
-        let user;
-        if (role === 'student') {
-            user = await Student.findOne({ where: { Email: email } });
-        } else if (role === 'teacher') {
-            user = await Teacher.findOne({ where: { Email: email } });
-        }
-
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        const storedCode = String(user.verificationCode).trim();
-        const receivedCode = String(code).trim();
-
-        if (storedCode !== receivedCode) {
-            return res.status(400).json({ error: 'Invalid verification code' });
-        }
-
-        if (new Date() > user.verificationCodeExpires) {
-            return res.status(400).json({ error: 'Verification code has expired' });
-        }
-
-        // Update only the necessary fields
-        await user.update({
-            isVerified: true,
-            verificationCode: null,
-            verificationCodeExpires: null
-        }, {
-            fields: ['isVerified', 'verificationCode', 'verificationCodeExpires'],
-            silent: true // Prevent hooks from running unnecessarily
-        });
-
-        createSendToken(user, 200, res);
-    } catch (error) {
-        console.error('Verification error:', error);
-        res.status(500).json({
-            error: 'Email verification failed',
-            details: error.message
-        });
-    }
-};
 
 export const resendVerification = async (req, res, next) => {
     try {
-        const { email, role } = req.body;
+        const { email } = req.body;
 
-        let user;
-        if (role === 'student') {
-            user = await Student.findOne({ where: { Email: email } });
-        } else if (role === 'teacher') {
-            user = await Teacher.findOne({ where: { Email: email } });
-        } else {
-            return res.status(400).json({ error: 'Invalid role specified' });
-        }
-
+        const user = await User.findOne({ where: { email } });
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        if (user.isVerified) {
+        if (user.is_verified) {
             return res.status(400).json({ error: 'Email is already verified' });
         }
 
-        // Generate new code (model hook will do this automatically)
-        user.verificationCodeExpires = new Date(Date.now() + 3600000); // 1 hour
+        // Generate new verification code
+        user.verification_code = crypto.randomInt(100000, 999999).toString();
+        user.verification_token_expires = new Date(Date.now() + 3600000);
         await user.save();
 
         await sendEmail({
-            email: user.Email,
+            email: user.email,
             subject: 'Your New Verification Code',
-            message: `Your new verification code is: <strong>${user.verificationCode}</strong><br>
+            message: `Your new verification code is: <strong>${user.verification_code}</strong><br>
             It will expire in 1 hour.`
         });
 
@@ -252,7 +299,6 @@ export const protect = async (req, res, next) => {
     try {
         let token;
 
-        // Get token from cookies or headers
         if (req.cookies?.jwt) {
             token = req.cookies.jwt;
         } else if (req.headers.authorization?.startsWith('Bearer')) {
@@ -265,41 +311,25 @@ export const protect = async (req, res, next) => {
             });
         }
 
-        // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        console.log('Decoded token:', decoded);
 
-        // Find user based on role
-        let user;
-
-        // In the protect middleware:
-        if (decoded.role === 'student') {
-            user = await Student.findByPk(decoded.id);
-            if (user) {
-                req.user = {
-                    StudentID: user.StudentID,
-                    ...user.get({ plain: true })
-                };
-            }
-        } else if (decoded.role === 'teacher') {
-            user = await Teacher.findByPk(decoded.id);
-            if (user) {
-                req.user = {
-                    TeacherID: user.TeacherID,
-                    ...user.get({ plain: true })
-                };
-            }
-        }
-
+        const user = await User.findByPk(decoded.id);
         if (!user) {
             return res.status(401).json({ error: 'User no longer exists' });
         }
 
-        req.role = decoded.role; // Make sure this is set
+        if (!user.is_verified) {
+            return res.status(401).json({
+                error: 'Account not verified',
+                unverified: true
+            });
+        }
+
         req.user = user.get({ plain: true });
+        req.role = decoded.role;
         next();
     } catch (error) {
-        console.error('Authentication error:', error); // Debug log
+        console.error('Authentication error:', error);
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({
                 error: 'Your session has expired. Please log in again.',
@@ -331,17 +361,9 @@ export const restrictTo = (...roles) => {
 // Forgot password
 export const forgotPassword = async (req, res, next) => {
     try {
-        const { email, role } = req.body;
+        const { email } = req.body;
 
-        let user;
-        if (role === 'student') {
-            user = await Student.findOne({ where: { Email: email } });
-        } else if (role === 'teacher') {
-            user = await Teacher.findOne({ where: { Email: email } });
-        } else {
-            return res.status(400).json({ error: 'Invalid role specified' });
-        }
-
+        const user = await User.findOne({ where: { email } });
         if (!user) {
             return res.status(404).json({ error: 'There is no user with that email address' });
         }
@@ -358,7 +380,7 @@ export const forgotPassword = async (req, res, next) => {
 
         try {
             await sendEmail({
-                email: user.Email,
+                email: user.email,
                 subject: 'Your password reset token (valid for 10 minutes)',
                 message
             });
@@ -386,38 +408,50 @@ export const forgotPassword = async (req, res, next) => {
 export const resetPassword = async (req, res, next) => {
     try {
         const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
-        const { role } = req.body;
+        const { password } = req.body;
 
-        let user;
-        if (role === 'student') {
-            user = await Student.findOne({
-                where: {
-                    passwordResetToken: hashedToken,
-                    passwordResetExpires: { [Op.gt]: Date.now() }
-                }
-            });
-        } else if (role === 'teacher') {
-            user = await Teacher.findOne({
-                where: {
-                    passwordResetToken: hashedToken,
-                    passwordResetExpires: { [Op.gt]: Date.now() }
-                }
-            });
-        } else {
-            return res.status(400).json({ error: 'Invalid role specified' });
-        }
+        const user = await User.findOne({
+            where: {
+                passwordResetToken: hashedToken,
+                passwordResetExpires: { [Op.gt]: Date.now() }
+            }
+        });
 
         if (!user) {
             return res.status(400).json({ error: 'Token is invalid or has expired' });
         }
 
         // Update password
-        user.Password = req.body.password;
+        user.password = password;
         user.passwordResetToken = null;
         user.passwordResetExpires = null;
         await user.save();
 
-        createSendToken(user, 200, res);
+        // Create and send token
+        const token = signToken(user.user_id, user.role_id === 2 ? 'teacher' : 'student');
+
+        const cookieOptions = {
+            expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 3600 * 1000),
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production',
+            path: '/'
+        };
+
+        res.cookie('jwt', token, cookieOptions);
+
+        res.status(200).json({
+            status: 'success',
+            token,
+            data: {
+                user: {
+                    user_id: user.user_id,
+                    first_name: user.first_name,
+                    last_name: user.last_name,
+                    email: user.email
+                }
+            }
+        });
     } catch (error) {
         res.status(500).json({
             error: 'Password reset failed',
@@ -431,43 +465,50 @@ export const updatePassword = async (req, res, next) => {
     try {
         const { currentPassword, newPassword } = req.body;
 
-        let user;
-        if (req.role === 'student') {
-            user = await Student.findByPk(req.user.StudentID);
-        } else if (req.role === 'teacher') {
-            user = await Teacher.findByPk(req.user.TeacherID);
-        }
-
-        if (!user || !user.verifyPassword(currentPassword)) {
+        const user = await User.findByPk(req.user.user_id);
+        if (!user || !(await user.verifyPassword(currentPassword))) {
             return res.status(401).json({ error: 'Your current password is wrong' });
         }
 
-        user.Password = newPassword;
+        user.password = newPassword;
         await user.save();
 
-        createSendToken(user, 200, res);
+        // Create and send token
+        const token = signToken(user.user_id, req.role);
+
+        const cookieOptions = {
+            expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 3600 * 1000),
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: process.env.NODE_ENV === 'production', // false in development
+            path: '/',
+            domain: process.env.NODE_ENV === 'production' ? 'yourdomain.com' : undefined
+        };
+
+        res.cookie('jwt', token, cookieOptions);
+
+        res.status(200).json({
+            status: 'success',
+            token
+        });
     } catch (error) {
         res.status(500).json({
             error: 'Password update failed',
             details: error.message
         });
-
     }
 };
 
-// In authController.js - ensure getProfile returns role
 export const getProfile = async (req, res) => {
     try {
-        let user;
-        if (req.role === 'student') {
-            user = await Student.findByPk(req.user.id, {
-                attributes: { exclude: ['Password', 'Salt', 'verificationCode'] }
-            });
-        } else if (req.role === 'teacher') {
-            user = await Teacher.findByPk(req.user.id, {
-                attributes: { exclude: ['Password', 'Salt', 'verificationCode'] }
-            });
-        }
+        const user = await User.findByPk(req.user.user_id, {
+            attributes: { exclude: ['password', 'salt', 'verification_code'] },
+            include: [{
+                model: Role,
+                as: 'role',
+                attributes: ['role_label']
+            }]
+        });
 
         if (!user) {
             return res.status(404).json({ error: 'User not found' });
@@ -477,10 +518,11 @@ export const getProfile = async (req, res) => {
             status: 'success',
             data: {
                 user: user.get({ plain: true }),
-                role: req.role  // Make sure role is included
+                role: req.role
             }
         });
     } catch (error) {
+        console.error("Profile error:", error);
         res.status(500).json({
             error: 'Failed to fetch profile',
             details: error.message
@@ -488,6 +530,26 @@ export const getProfile = async (req, res) => {
     }
 };
 export const logout = (req, res) => {
-    res.clearCookie('jwt');
-    res.status(200).json({ status: 'success' });
+    try {
+        // Check if cookie exists before trying to clear it
+        if (req.cookies?.jwt) {
+            res.clearCookie('jwt', {
+                httpOnly: true,
+                sameSite: 'lax',
+                secure: process.env.NODE_ENV === 'production',
+                path: '/'
+            });
+        }
+
+        res.status(200).json({
+            status: 'success',
+            message: 'Logged out successfully'
+        });
+    } catch (error) {
+        console.error('Logout error:', error);
+        res.status(500).json({
+            error: 'Logout failed',
+            details: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
 };

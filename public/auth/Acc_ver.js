@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Get email and role from URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     const email = urlParams.get('email');
     const role = urlParams.get('role');
@@ -9,32 +8,23 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Set hidden fields and display email
     document.getElementById('email').value = email;
     document.getElementById('role').value = role;
     document.getElementById('userEmail').textContent = email;
 
-    // Start the resend timer
     startResendTimer();
 
-    // Form submission handler
     document.getElementById('verificationForm').addEventListener('submit', async function(e) {
         e.preventDefault();
 
-        // Get the verify button and disable it during submission
         const verifyBtn = document.getElementById('verifybtn');
         verifyBtn.disabled = true;
         verifyBtn.textContent = 'Verifying...';
 
-        // Hide any previous error message
-        document.getElementById('errorMessage').style.display = 'none';
-
         const codeInputs = document.querySelectorAll('#codeInputs input');
         const verificationCode = Array.from(codeInputs)
-            .map(input => input.value.trim()) // Trim whitespace
+            .map(input => input.value.trim())
             .join('');
-
-        console.log('Submitting verification code:', verificationCode);
 
         try {
             const response = await fetch('/auth/verify-email', {
@@ -42,36 +32,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     email: email,
-                    code: verificationCode,
-                    role: role
+                    code: verificationCode
                 })
             });
 
             const data = await response.json();
-            console.log('Verification response:', data);
 
-            // After successful verification:
             if (response.ok) {
-                const { token } = data;
-
-                // Store token in both cookie and localStorage for redundancy
-                document.cookie = `jwt=${token}; path=/; max-age=${60*60*24*7}; Secure; SameSite=Strict`;
-                localStorage.setItem('jwt', token);
-
-                // Redirect to dashboard
+                // Store token and redirect
+                localStorage.setItem('jwt', data.token);
+                document.cookie = `jwt=${data.token}; path=/; max-age=${60*60*24*7}; Secure; SameSite=Strict`;
                 window.location.href = '/dashboard';
-
-            }  else {
-            const errorMessage = document.getElementById('errorMessage');
-            if (data.unverified) {
-                errorMessage.textContent = 'Account not verified. Please check your email.';
             } else {
-                errorMessage.textContent = data.error || 'Verification failed. Please try again.';
-            }
-            errorMessage.style.display = 'block';
-
-
-                // Clear inputs and focus first field
+                document.getElementById('errorMessage').textContent = data.error || 'Verification failed';
+                document.getElementById('errorMessage').style.display = 'block';
                 codeInputs.forEach(input => input.value = '');
                 codeInputs[0].focus();
             }
@@ -86,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Auto-focus and move between inputs
+
 function moveToNext(input) {
     // Only allow numbers
     input.value = input.value.replace(/[^0-9]/g, '');

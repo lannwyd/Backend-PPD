@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teacher Profile Settings</title>
+    <title>Profile Settings</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,7 +12,7 @@
 <body class="bg-[#111927] min-h-screen">
 <nav class="bg-[#111927] text-[#E5E7EB] flex items-center justify-between px-6 py-4 border-b border-[#1F2937]">
     <div class="flex items-center">
-        <img src="./Documents/IoT.svg" alt="IoT Logo" class="w-6 h-6 mr-4 ml-10 text-[#9fef00]">
+        <img src="../../public/Documents/IoT.svg" alt="IoT Logo" class="w-6 h-6 mr-4 ml-10 text-[#9fef00]">
         <span class="font-semibold text-lg mr-10">IoT Lab</span>
         <div class="flex space-x-10">
             <a href="#" class="hover:text-[#9FEF00]">Home</a>
@@ -84,7 +84,7 @@
             <div class="mb-4">
                 <h4 class="font-medium text-white mb-2">Email Notifications</h4>
                 <label class="flex items-center">
-                    <span class="ml-2 text-[#E5E7EB]">Receive email about your session activities</span>
+                    <span class="ml-2 text-[#E5E7EB]">Receive email about your compilation results</span>
                     <button id="emailToggle"
                             class="ml-auto relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 bg-[#9FEF00]">
                             <span id="emailToggleCircle"
@@ -122,32 +122,30 @@
     let originalData = {};
 
     // Add this to load profile when page loads
-    document.addEventListener('DOMContentLoaded', loadTeacherProfile);
+    document.addEventListener('DOMContentLoaded', loadStudentProfile);
 
-    document.addEventListener('DOMContentLoaded', loadTeacherProfile);
-
-    async function loadTeacherProfile() {
+    async function loadStudentProfile() {
         try {
-            const res = await fetch("/api/teachers/me", {
+            const res = await fetch("/api/students/me", {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
 
+            console.log("Response status:", res.status);
+
             if (!res.ok) {
-                // Handle 401 unauthorized
-                if (res.status === 401) {
-                    window.location.href = '/login';
-                    return;
-                }
                 const errorData = await res.json();
+                console.error("Error response:", errorData);
                 throw new Error(errorData.error || "Failed to fetch profile");
             }
 
             const responseData = await res.json();
-            const user = responseData.data?.user || responseData.data;
+            console.log("Full response:", responseData);
 
+            // Handle both possible response structures
+            const user = responseData.data?.user || responseData.data;
             if (!user) {
                 throw new Error("Invalid user data structure");
             }
@@ -167,53 +165,46 @@
         } catch (err) {
             console.error("Profile load error:", err);
             alert(err.message || "Failed to load profile");
-            window.location.href = '/dashboard';
+            if (err.message.includes("authenticate") || err.message.includes("log in")) {
+                window.location.href = '/dashboard';
+            }
         }
     }
 
-    // In profile2_teacher.html - update the form submit handler
     profileForm.addEventListener("submit", async (e) => {
         e.preventDefault();
-
-        // Validate phone number format first
-        const phoneRegex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
-        if (phoneInput.value && !phoneRegex.test(phoneInput.value)) {
-            alert("Please enter a valid phone number");
-            return;
-        }
 
         saveText.classList.add("hidden");
         saveSpinner.classList.remove("hidden");
         saveBtn.disabled = true;
 
         try {
-            // Get current teacher's ID
-            const profileRes = await fetch("/api/teachers/me", {
+            // First get the current user's ID
+            const profileRes = await fetch("/api/students/me", {  // Changed endpoint
                 credentials: 'include'
             });
 
             if (!profileRes.ok) {
-                throw new Error("Failed to fetch profile");
+                const errorData = await profileRes.json();
+                throw new Error(errorData.error || "Failed to fetch profile");
             }
 
             const profileData = await profileRes.json();
             const user = profileData.data?.user || profileData.data;
-            const teacherId = user.TeacherID;
+            const studentId = user.StudentID;
 
-            // Prepare update data
-            const updateData = {
-                FirstName: firstNameInput.value,
-                LastName: lastNameInput.value,
-                Phone: phoneInput.value || null // Handle empty phone
-            };
-
-            // Update teacher data
-            const updateRes = await fetch(`/api/teachers/${teacherId}`, {
+            // Then update the student data
+            const updateRes = await fetch(`/api/students/${studentId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify(updateData),
+                body: JSON.stringify({
+                    FirstName: firstNameInput.value,
+                    LastName: lastNameInput.value,
+                    Email: emailInput.value,
+                    Phone: phoneInput.value
+                }),
                 credentials: 'include'
             });
 
@@ -225,57 +216,19 @@
             const updatedData = await updateRes.json();
             alert("Profile updated successfully!");
             originalData = {
-                FirstName: updatedData.data.FirstName,
-                LastName: updatedData.data.LastName,
-                Email: user.Email, // Keep original email
-                Phone: updatedData.data.Phone
+                FirstName: updatedData.FirstName,
+                LastName: updatedData.LastName,
+                Email: updatedData.Email,
+                Phone: updatedData.Phone
             };
         } catch (err) {
             console.error("Update error:", err);
             alert(err.message || "Failed to update profile");
-            // Reset form to original values
-            firstNameInput.value = originalData.FirstName;
-            lastNameInput.value = originalData.LastName;
-            emailInput.value = originalData.Email;
-            phoneInput.value = originalData.Phone;
         } finally {
             saveText.classList.remove("hidden");
             saveSpinner.classList.add("hidden");
             saveBtn.disabled = false;
         }
-    });
-    async function changePassword(newPassword) {
-        try {
-            const response = await fetch('/auth/update-password', {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                credentials: 'include',
-                body: JSON.stringify({
-                    currentPassword: prompt("Enter your current password:"),
-                    newPassword: newPassword
-                })
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                alert("Password changed successfully!");
-            } else {
-                throw new Error(data.error || "Failed to change password");
-            }
-        } catch (error) {
-            console.error('Password change error:', error);
-            alert(`Password change failed: ${error.message}`);
-        }
-    }
-    cancelBtn.addEventListener("click", function() {
-        // Reset form to original values
-        firstNameInput.value = originalData.FirstName;
-        lastNameInput.value = originalData.LastName;
-        emailInput.value = originalData.Email;
-        phoneInput.value = originalData.Phone;
     });
 </script>
 

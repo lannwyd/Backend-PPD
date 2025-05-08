@@ -1,39 +1,91 @@
-// models/associations.js
-import Teacher from "./Teacher.js";
-import Student from "./student.js";
-import Grade from "./grade.js";
-import Occupation from "./occupation.js";
-import Lab from "./lab.js";
-import PublicRoom from "./PublicRoom.js";
-import IndividualRoom from "./individualRoom.js";
-import SessionHistory from "./sessionHistory.js";
+import User from './User.js';
+import Role from './Role.js';
+import Room from './Room.js';
+import Session from './Session.js';
+import JoinedUsers from './JoinedUsers.js';
+import Board from './Board.js';
 
-const setupAssociations = () => {
-    // Teacher-Occupation
-    Teacher.belongsTo(Occupation, { foreignKey: 'OccupationID' });
-    Occupation.hasMany(Teacher, { foreignKey: 'OccupationID' });
+function setupAssociations() {
+    // User to Role (Many-to-One)
+    User.belongsTo(Role, {
+        foreignKey: 'role_id',
+        as: 'role'
+    });
 
-    // Student-Grade
-    Student.belongsTo(Grade, { foreignKey: 'GradeID' });
-    Grade.hasMany(Student, { foreignKey: 'GradeID' });
+    Role.hasMany(User, {
+        foreignKey: 'role_id',
+        as: 'users'
+    });
 
-    // Lab-Teacher
-    Lab.belongsTo(Teacher, { foreignKey: 'TeacherID' });
-    Teacher.hasMany(Lab, { foreignKey: 'TeacherID' });
+    // Room to User (Many-to-One for creator)
+    Room.belongsTo(User, {
+        foreignKey: 'room_creator_id',
+        as: 'creator'
+    });
 
-    // PublicRoom-Teacher
-    PublicRoom.belongsTo(Teacher, { foreignKey: 'TeacherID' });
-    Teacher.hasMany(PublicRoom, { foreignKey: 'TeacherID' });
+    User.hasMany(Room, {
+        foreignKey: 'room_creator_id',
+        as: 'createdRooms'
+    });
 
-    // IndividualRoom-Student-Lab
-    IndividualRoom.belongsTo(Student, { foreignKey: 'StudentID' });
-    Student.hasMany(IndividualRoom, { foreignKey: 'StudentID' });
-    IndividualRoom.belongsTo(Lab, { foreignKey: 'LabID' });
-    Lab.hasMany(IndividualRoom, { foreignKey: 'LabID' });
+    // Room to Board (Many-to-One)
+    Room.belongsTo(Board, {
+        foreignKey: 'board_id',
+        as: 'board'
+    });
 
-    // SessionHistory-PublicRoom
-    SessionHistory.belongsTo(PublicRoom, { foreignKey: 'RoomID' });
-    PublicRoom.hasMany(SessionHistory, { foreignKey: 'RoomID' });
-};
+    Board.hasMany(Room, {
+        foreignKey: 'board_id',
+        as: 'rooms'
+    });
+
+    // Session to Room (Many-to-One)
+    Session.belongsTo(Room, {
+        foreignKey: 'room_id',
+        as: 'room'
+    });
+
+    Room.hasMany(Session, {
+        foreignKey: 'room_id',
+        as: 'sessions'
+    });
+
+    // User to Room (Many-to-Many through JoinedUsers)
+    User.belongsToMany(Room, {
+        through: JoinedUsers,
+        foreignKey: 'user_id',
+        otherKey: 'room_id',
+        as: 'joinedRooms'
+    });
+
+    Room.belongsToMany(User, {
+        through: JoinedUsers,
+        foreignKey: 'room_id',
+        otherKey: 'user_id',
+        as: 'joinedUsers'
+    });
+
+    // Additional direct associations for JoinedUsers
+    JoinedUsers.belongsTo(User, {
+        foreignKey: 'user_id',
+        as: 'user'
+    });
+
+    JoinedUsers.belongsTo(Room, {
+        foreignKey: 'room_id',
+        as: 'room'
+    });
+
+    User.hasMany(JoinedUsers, {
+        foreignKey: 'user_id',
+        as: 'roomMemberships'
+    });
+
+    Room.hasMany(JoinedUsers, {
+        foreignKey: 'room_id',
+        as: 'userMemberships'
+    });
+
+}
 
 export default setupAssociations;

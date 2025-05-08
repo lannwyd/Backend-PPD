@@ -1,3 +1,5 @@
+// At the top with other imports
+import { uploadProfilePicture } from './src/controllers/userController.js';
 import express from "express";
 import cors from "cors";
 import sequelize from "./models/db.js";
@@ -5,128 +7,225 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import setupAssociations from './models/associations.js';
 import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
+import morgan from "morgan";
+import { createServer } from "http";
+import { Server } from "socket.io";
+import multer from 'multer';
+import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs';
 
-
-import studentRoutes from "./src/routes/studentRoutes.js";
-import gradeRoutes from "./src/routes/gradeRoutes.js";
-import teacherRoutes from "./src/routes/teacherRoutes.js";
-import occupationRoutes from "./src/routes/occupationRoutes.js";
-import individualRoomRoutes from './src/routes/individualRoomRoutes.js';
-import labRoutes from './src/routes/labRoutes.js';
-import publicRoomRoutes from './src/routes/publicRoomRoutes.js';
-import sessionHistoryRoutes from './src/routes/sessionHistoryRoutes.js';
-import {getProfile, protect} from './src/controllers/authController.js';
-
-
+// Routes
+import userRoutes from "./src/routes/userRoutes.js";
+import roleRoutes from "./src/routes/roleRoutes.js";
+import roomRoutes from "./src/routes/roomRoutes.js";
+import sessionRoutes from "./src/routes/sessionRoutes.js";
+import joinedUsersRoutes from "./src/routes/joinedUsersRoutes.js";
+import boardRoutes from "./src/routes/boardRoutes.js";
 import authRoutes from './src/routes/authRoutes.js';
+import * as userController from "./src/controllers/userController.js";
+import {protect} from "./src/controllers/authController.js";
 
-
+// Initialize express app
 const app = express();
-// In server.js
-app.use(cors({
-    origin: 'http://localhost:5000',
-    credentials: true,
-    exposedHeaders: ['Authorization'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-
-}));
-
-app.use(express.json());
-app.use(express.static("public"));
-app.use(express.urlencoded({ extended: true })); // Add this line
-app.use(express.json());
-app.use((req, res, next) => {
-    console.log('Cookies:', req.cookies);
-    console.log('Headers:', req.headers);
-    next();
-});
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        // Create directory if it doesn't exist
+        const dest = path.join(__dirname, 'public', 'uploads', 'profile_pictures');
+        fs.mkdirSync(dest, { recursive: true });
+        cb(null, dest);
+    },
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        cb(null, `${uuidv4()}${ext}`);
+    }
+});
+
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed'), false);
+        }
+    }
+});
+
+// Security middleware
+app.use(helmet());
+app.use(cors({
+    origin: process.env.FRONTEND_URL || 'http://localhost:5000',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+app.use(
+    helmet({
+        contentSecurityPolicy: {
+            directives: {
+                defaultSrc: ["'self'"],
+                scriptSrc: [
+                    "'self'",
+                    "https://cdn.tailwindcss.com",
+                    "'unsafe-inline'" // TEMPORARY for development
+                ],
+                styleSrc: [
+                    "'self'",
+                    "https://cdnjs.cloudflare.com",
+                    "'unsafe-inline'"
+                ],
+                imgSrc: ["'self'", "data:"],
+                fontSrc: ["'self'", "https://cdnjs.cloudflare.com"],
+                connectSrc: ["'self'"] // Allow fetch to your API
+            },
+        },
+    })
+);
+
+// Logging
+app.use(morgan('dev'));
+
+// Body parsing
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/students', studentRoutes);
-app.use("/api/grades", gradeRoutes);
-app.use("/api/teachers", teacherRoutes);
-app.use("/api/occupations", occupationRoutes);
-app.use('/api/individual-rooms', individualRoomRoutes);
-app.use('/api/labs', labRoutes);
-app.use('/api/public-rooms', publicRoomRoutes);
-app.use('/api/session-history', sessionHistoryRoutes);
-
-app.use('/auth', authRoutes);
-
-
-
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({
-        error: "Something went wrong!",
-        ...(process.env.NODE_ENV === 'development' && { details: err.message })
-    });
-});
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'Home.html'));
-});
-
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-
-app.get('/register', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'register.html'));
-});
-
-
-app.get('/Account-verification.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'Account-verification.html'));
-});
-
-app.get('/dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
-});
-
-app.get('/profile2.html', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'profile2.html'));
-});
-
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'Home.html'));
-});
-
-
-
-
-async function startServer() {
+// Database connection and role seeding
+async function initializeDatabase() {
     try {
         await sequelize.authenticate();
         console.log('✅ Database connection established');
 
+        // Setup associations
         setupAssociations();
 
+        // Sync models
         await sequelize.sync({ alter: true });
         console.log('🔄 Database synchronized');
 
-        const PORT = process.env.PORT || 5000;
-        app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+        // Seed initial roles if they don't exist
+        const { Role } = sequelize.models;
+        await Role.findOrCreate({ where: { role_label: 'student' } });
+        await Role.findOrCreate({ where: { role_label: 'teacher' } });
+        console.log('🔒 Base roles seeded');
     } catch (error) {
-        console.error("❌ Server startup failed:");
-        console.error("- Verify all models are properly exported");
-        console.error("- Check association definitions");
-        console.error("- Ensure database credentials are correct");
-        console.error("Full error:", error);
+        console.error('❌ Database initialization failed:', error);
+        throw error;
+    }
+}
+
+// API Routes
+app.use('/api/users', userRoutes);
+app.use('/api/roles', roleRoutes);
+app.use('/api/rooms', roomRoutes);
+app.use('/api/sessions', sessionRoutes);
+app.use('/api/members', joinedUsersRoutes);
+app.use('/api/board' , boardRoutes );
+app.use('/auth', authRoutes);
+
+// HTML Routes
+const htmlRoutes = [
+    '/', '/login', '/register', '/dashboard',
+    '/profile', '/Account-verification'
+];
+
+htmlRoutes.forEach(route => {
+    app.get(route, (req, res) => {
+        const file = route === '/' ? 'Home.html' : `${route.replace('/', '')}.html`;
+        res.sendFile(path.join(__dirname, 'public', file));
+    });
+});
+app.patch('/api/users/upload-profile-picture',
+    protect,
+    upload.single('profilePicture'),
+    userController.uploadProfilePicture
+);
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'healthy' });
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(err.status || 500).json({
+        error: err.message || 'Something went wrong!',
+        ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
+    });
+});
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).json({ error: 'Not found' });
+});
+
+// Create HTTP and WebSocket server
+const httpServer = createServer(app);
+const io = new Server(httpServer, {
+    cors: {
+        origin: process.env.FRONTEND_URL || 'http://localhost:5000',
+        methods: ["GET", "POST"]
+    }
+});
+
+
+
+// Socket.io connection handler
+io.on('connection', (socket) => {
+    console.log('New client connected');
+
+    socket.on('joinRoom', (roomId) => {
+        socket.join(roomId);
+        console.log(`User joined room ${roomId}`);
+    });
+
+    socket.on('disconnect', () => {
+        console.log('Client disconnected');
+    });
+});
+
+// Start server
+async function startServer() {
+    try {
+        await initializeDatabase();
+
+        const PORT = process.env.PORT || 5000;
+        httpServer.listen(PORT, () => {
+            console.log(`🚀 Server running on port ${PORT}`);
+            console.log(`🌐 WebSocket server running on port ${PORT}`);
+        });
+    } catch (error) {
+        console.error("❌ Server startup failed:", error);
         process.exit(1);
     }
 }
-startServer();
-
+// Graceful shutdown
 process.on('SIGTERM', async () => {
+    console.log('SIGTERM received. Shutting down gracefully...');
     await sequelize.close();
-    process.exit(0);
+    httpServer.close(() => {
+        console.log('Server closed');
+        process.exit(0);
+    });
 });
 
 process.on('SIGINT', async () => {
+    console.log('SIGINT received. Shutting down gracefully...');
     await sequelize.close();
-    process.exit(0);
+    httpServer.close(() => {
+        console.log('Server closed');
+        process.exit(0);
+    });
 });
+
+startServer();

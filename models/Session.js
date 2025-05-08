@@ -1,55 +1,48 @@
-// models/sessionHistory.js
 import { DataTypes } from "sequelize";
-import  sequelize  from "./db.js"; // Adjust the path if necessary
+import sequelize from "./db.js";
 
-const SessionHistory = sequelize.define("SessionHistory", {
-    SessionID: {
+const Session = sequelize.define("Session", {
+    session_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
+        autoIncrement: true,
     },
-    SessionType: {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        validate: {
-            isIn: [["Public", "Private"]],
-        },
-    },
-    SessionDate: {
+    session_date: {
         type: DataTypes.DATEONLY,
         allowNull: false,
     },
-    StartTime: {
+    session_start_time: {
         type: DataTypes.TIME,
         allowNull: false,
     },
-    EndTime: {
+    session_end_time: {
         type: DataTypes.TIME,
         allowNull: false,
         validate: {
             isAfterStartTime(value) {
-                if (value <= this.StartTime) {
+                if (value <= this.session_start_time) {
                     throw new Error("EndTime must be greater than StartTime");
                 }
             },
         },
     },
-    SessionResultList: {
+    compile_results: {
         type: DataTypes.TEXT,
     },
-    LastExecutedCode: {
-        type: DataTypes.TEXT,
+    code_attempt_link: {
+        type: DataTypes.STRING(255),
     },
-    RoomID: {
+    room_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         references: {
-            model: "PublicRoom",
-            key: "RoomID",
+            model: "Room",
+            key: "room_id",
         },
     },
 }, {
-    tableName: "SessionHistory",
+    tableName: "Session",
     timestamps: false,
 });
 
-export default SessionHistory;
+export default Session;
