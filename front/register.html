@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Style.css">
+    <script src="https://kit.fontawesome.com/f8e1971d71.js" crossorigin="anonymous"></script>
+    <title>IoT Remote Lab - Sign-up</title>
+</head>
+
+<body>
+    <nav>
+        <div class="navbar">
+            <div class="icon">
+                <img src="..\Documents\mic-white.png" alt="IoT Document" width="18">
+            </div>
+            <p>IoT Lab</p>
+        </div>
+    </nav>
+    <main>
+        <div class="Box1">
+            <header>
+                <div class="icon2">
+                    <img src="..\Documents\mic-black.png" alt="IoT Document" width="30">
+                </div>
+                <div class="part1">
+                    <h1>Create Account</h1>
+                </div>
+                <p>Join IoT Lab Community</p>
+            </header>
+            <div class="input-part">
+                <div class="name">
+                    <div class="f-name">
+                        <form>
+                            <label for="First_Name"><b>First Name</b></label><br>
+                            <input type="text" id="First_Name" name="First_Name" autocomplete="given-name" placeholder="first name" required>
+                            <p class="error_message" id="Firstname_error_message"></p>
+                        </form>
+                    </div>
+                    <div class="l-name">
+                        <form>
+                            <label for="last_name"><b>Last Name</b></label><br>
+                            <input type="text" id="last_name" name="last_name" autocomplete="family-name" placeholder="Last name" required>
+                            <p class="error_message" id="Lastname_error_message"></p>
+                        </form>
+                    </div>
+                </div>
+                <div class="info">
+                    <form>
+                        <div class="mail-info">
+                            <label for="email"><b>Email</b></label><br>
+                            <input type="email" id="email" email="email" autocomplete="email" placeholder="Enter your email" required>
+                            <p class="error_message" id="email_error_message"></p>
+                        </div>
+                        <div class="role-info">
+                            <label for="Role"><b>Role</b></label><br>
+                            <select id="Role">
+                                <option value="Student">Student</option>
+                                <option value="Teacher">Professor</option>
+                            </select>
+                        </div>
+                        <div class="password-info">
+                            <label for="password"><b>password</b> </label><br>
+                            <div class="pass_show">
+                                <input type="password" id="password" minlength="8" placeholder="Create a password" required><br>
+                                <div class="show" id="show_pass"><img src="..\Documents\eye-slash-solid.svg" alt="eye" width="18"></div>
+                            </div>
+                            <p class="error_message" id="error_message1"></p>
+                        </div>
+                        <div class="password-conf-info">
+                            <label for="Confirm-Password"><b>Confirm Password</b> </label><br>
+                            <div class="pass_show">
+                                <input type="password" id="Confirm-Password" minlength="8" placeholder="Confirm your password" required><br>
+                                <div class="show" id="show_conf_pass"><img src="..\Documents\eye-slash-solid.svg" alt="eye" width="18"></div>
+                            </div>
+                            <p class="error_message" id="error_message2"></p>
+                        </div>
+                        <div class="check-box">
+                            <input type="checkbox" id="agree" name="agree" required>
+                            <label for="agree">I agree to the <sup><a style="color: #9FEF00;" href="..\Documents\sample-privacy-policy-template.pdf" target="_blank">Terms of Service</a></sup> and <sup><a style="color: #9FEF00;" href="..\Documents\sample-privacy-policy-template.pdf" target="_blank"> Privacy Policy</a></sup></label>
+                            <p class="error_message" id="not_checked"></p>
+                        </div>
+                    </form>
+                </div>
+                <a href="#">
+                    <button id="cre_acc">Create Account</button> </a>
+            </div>
+            <div class="last-part">
+                <p id="have_acc">
+                    Already have an account?
+                </p>
+                <p id="sign"><a style="color: #9FEF00;" href="Sign-in.html">sign in</a></p>
+            </div>
+        </div>
+    </main>
+    <script src="login.js"></script>
+</body>
+
+</html>

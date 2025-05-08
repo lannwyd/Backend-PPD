@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Style.css">
+    <script src="https://kit.fontawesome.com/f8e1971d71.js" crossorigin="anonymous"></script>
+    <title>IoT Remote Lab - Home</title>
+</head>
+<body>
+    <nav>
+        <div class="navbar">
+            <div class="icon-text">
+                
+                <p id="p1"><img src="..\Documents\mic-white.png" alt="IoT Document" width="18">IoT Lab</p>
+                <a  id="p2"  href="Home.html"><p > Home</p></a>
+                <p class="p-color">Documentation</p>
+                <p class="p-color">History</p>
+            </div>
+            <div class="buttons">
+                <a href="..\login_sign-in\login.html">
+                    <button id="b2">
+                        <img src="..\Documents\Vector.png" alt="Icon" width="12" height="12"> 
+                        Start Coding
+                    </button>
+                </a>
+                <a href="..\login_sign-in\Sign-in.html">  
+                    <button id="b1">
+                        Already have an account
+                    </button>
+                </a>
+                
+            </div>
+        </div>
+    </nav>
+    <main>
+        <header>  
+            <div class="text-photo">
+                <div id="big-text">
+                    <p class="txt" >Remote IoT Lab</p>
+                    <p class="txt">Programming</p>
+                    <p class="txt" style="color: #9FEF00;">Made Easy</p>
+                </div>
+                <div id="small-text">
+                    <p>
+                        Code, compile, and see real-time 
+                        results through our remote Arduino setup.
+                        Perfect for students, educators, and IoT enthusiasts.                       
+                    </p>
+                </div>
+                <div id="button">
+                    <a href="..\login_sign-in\login.html">
+                        <button >
+                            <img src="..\Documents\Vector.png" alt="Icon" width="12" height="12"> 
+                            Try Now
+                        </button>
+                    </a>
+                </div>
+            </div>
+            <div class="image">
+                <!-- <div id="text-inside-image">
+                    <p id="line1">"Real-Time IoT Programming in Action!"</p>
+                    <p id="line2">"Write, upload, and see your code come to life instantly on real hardware."</p>
+                </div> -->
+                <div id="img1" >
+                    <img id="hoverImage" src="..\Documents\IOT.png" alt="IoT Document">
+                </div>
+            </div>     
+        </header>
+        <section>
+            <div class="three-parts">
+                <div class="Box1">
+                    <div class="icons">
+                        <img src="..\Documents\html.png" alt="Icon" width="25" height="20"> 
+                    </div>
+                    <h4>Live Coding</h4>
+                    <p>
+                        Write and compile Arduino code directly in your browser with real-time syntax highlighting.
+                    </p>
+                </div>
+
+                <div class="Box2">
+                    <div class="icons">
+                        <img src="..\Documents\camera.png" alt="Icon" width="25" height="20"> 
+                    </div>
+                    <h4>Live Results</h4>
+                    <p>
+                        Watch your code execution in real-time through our HD camera feed of the physical Arduino setup.
+                    </p>
+                </div>
+                
+                <div class="Box3">
+                    <div class="icons">
+                        <img src="..\Documents\vic4.png" alt="Icon" width="25" height="20"> 
+                    </div>
+                    <h4>Cloud Compilation</h4>
+                    <p>
+                        Compile your code in the cloud and deploy instantly to our test Arduino boards.
+                    </p>
+                </div>
+                
+            </div>
+        </section>
+        <article>
+            <div class="Box1">
+                <div class="header_box">
+                    <div class="three-points">
+                        <span class="red"></span> 
+                        <span class="yello"></span>
+                        <span class="green"></span>
+                    </div>
+                    <div class="two-button">
+                        <div class="butt">
+                            <div id="run-code">
+                                <img src="..\Documents\Vector.png" alt="Icon" width="12" height="12"> 
+                                <p>
+                                    Run Code</p>
+                            </div>
+                            <div id="Save">
+                                <img src="..\Documents\save.png" alt="Icon" width="12" height="12"> 
+                                <p>
+                                    Save</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="Box2">
+    <pre>
+    void setup ( ) { 
+    pinMode(LED_BUILTIN, OUTPUT);
+    } 
+    void loop ( ) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    delay(1000); 
+    digitalWrite(LED_BUILTIN, LOW); 
+    delay(1000);
+    }
+    </pre>
+                </div>
+            </div>
+        </article>
+    </main>
+    <footer>
+        <div class="parts">
+            <div class="part1">
+                <p ><img src="..\Documents\mic-black.png" alt="IoT Document" width="18">IoT Lab</p>
+            </div>
+            <div class="part2">
+                <div class="icons-and-text">
+                    <p>© 2025 IoTLab. All rights reserved.</p>
+                </div>
+                
+                
+            </div>
+        </div>
+    </footer>
+    <script src="Home.js"></script>
+</body>
+</html>
