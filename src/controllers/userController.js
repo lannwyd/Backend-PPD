@@ -1,5 +1,7 @@
 import User from "../../models/User.js";
 import Role from "../../models/Role.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 // Helper for consistent responses
 const respond = (res, status, data, message = '') => {

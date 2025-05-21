@@ -6,6 +6,7 @@ const Room = sequelize.define("Room", {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
+         allowNull: true, 
     },
     room_creator_id: {
         type: DataTypes.INTEGER,
@@ -18,14 +19,7 @@ const Room = sequelize.define("Room", {
     room_type: {
         type: DataTypes.ENUM('individual', 'public'),
         allowNull: false,
-    },
-    board_id: {
-        type: DataTypes.INTEGER,
-        references: {
-            model: "Board",
-            key: "board_id",
-        },
-    },
+    }, 
 }, {
     tableName: "Room",
     timestamps: false,

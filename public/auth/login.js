@@ -91,10 +91,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
+            console.log('Login response:', response);
 
             if (!response.ok) {
                 if (data.unverified) {
-                    localStorage.setItem('pendingEmail', email);
+                 
                     localStorage.setItem('pendingRole', role);
                     window.location.href = `/Account-verification.html?email=${encodeURIComponent(email)}&role=${role}`;
                     return;
@@ -103,8 +104,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Store token and redirect
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('userEmail', email);
             localStorage.setItem('userRole', data.data.role);
 
             window.location.href = '/dashboard';

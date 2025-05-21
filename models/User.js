@@ -26,7 +26,7 @@ const User = sequelize.define("User", {
     email: {
         type: DataTypes.STRING(100),
         allowNull: false,
-        unique: true,
+        unique: 'email_unique',
         validate: {
             isEmail: true
         }
@@ -76,6 +76,7 @@ const User = sequelize.define("User", {
 }, {
     tableName: "User",
     timestamps: false,
+   
     hooks: {
         beforeCreate: (user) => {
             user.verification_code = crypto.randomInt(100000, 999999).toString();

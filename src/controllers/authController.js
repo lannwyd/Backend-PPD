@@ -5,6 +5,9 @@ import crypto from 'crypto';
 import {sendEmail} from '../utils/email.js';
 import User from "../../models/User.js";
 import Role from "../../models/Role.js"; // Add this import
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 
 const signToken = (id, role) => {

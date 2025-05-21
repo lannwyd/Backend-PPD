@@ -11,7 +11,7 @@ import helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import morgan from "morgan";
 import { createServer } from "http";
-import { Server } from "socket.io";
+
 import multer from 'multer';
 import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
@@ -26,6 +26,8 @@ import boardRoutes from "./src/routes/boardRoutes.js";
 import authRoutes from './src/routes/authRoutes.js';
 import * as userController from "./src/controllers/userController.js";
 import {protect} from "./src/controllers/authController.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 // Initialize express app
 const app = express();
@@ -58,35 +60,52 @@ const upload = multer({
 });
 
 // Security middleware
-app.use(helmet());
+
 app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5000',
+    origin: '*',
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 app.use(
-    helmet({
-        contentSecurityPolicy: {
-            directives: {
-                defaultSrc: ["'self'"],
-                scriptSrc: [
-                    "'self'",
-                    "https://cdn.tailwindcss.com",
-                    "'unsafe-inline'" // TEMPORARY for development
-                ],
-                styleSrc: [
-                    "'self'",
-                    "https://cdnjs.cloudflare.com",
-                    "'unsafe-inline'"
-                ],
-                imgSrc: ["'self'", "data:"],
-                fontSrc: ["'self'", "https://cdnjs.cloudflare.com"],
-                connectSrc: ["'self'"] // Allow fetch to your API
-            },
-        },
-    })
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "'unsafe-eval'",
+          "https://cdnjs.cloudflare.com",
+          "https://cdn.socket.io",
+           "https://cdn.tailwindcss.com"
+        ],
+        styleSrc: [
+          "'self'",
+          "'unsafe-inline'",
+          "https://cdnjs.cloudflare.com",
+          "https://fonts.googleapis.com",
+          "https://cdn.tailwindcss.com"
+        ],
+        fontSrc: [
+          "'self'",
+          "https://cdnjs.cloudflare.com",
+          "https://fonts.gstatic.com",
+        ],
+        connectSrc: [
+          "'self'",
+          "http://localhost:4000",
+          "ws://localhost:4000",
+        ],
+        workerSrc: ["'self'", "blob:"],
+        imgSrc: ["'self'", "data:"],
+        objectSrc: ["'none'"],
+      },
+    },
+  })
 );
+
+
 
 // Logging
 app.use(morgan('dev'));
@@ -105,11 +124,10 @@ async function initializeDatabase() {
         await sequelize.authenticate();
         console.log('✅ Database connection established');
 
-        // Setup associations
         setupAssociations();
 
-        // Sync models
-        await sequelize.sync({ alter: true });
+        
+        await sequelize.sync({  alter: false });
         console.log('🔄 Database synchronized');
 
         // Seed initial roles if they don't exist
@@ -135,7 +153,7 @@ app.use('/auth', authRoutes);
 // HTML Routes
 const htmlRoutes = [
     '/', '/login', '/register', '/dashboard',
-    '/profile', '/Account-verification'
+    '/profile', '/Account-verification',"/LabRoom"
 ];
 
 htmlRoutes.forEach(route => {
@@ -171,28 +189,7 @@ app.use((req, res) => {
 
 // Create HTTP and WebSocket server
 const httpServer = createServer(app);
-const io = new Server(httpServer, {
-    cors: {
-        origin: process.env.FRONTEND_URL || 'http://localhost:5000',
-        methods: ["GET", "POST"]
-    }
-});
 
-
-
-// Socket.io connection handler
-io.on('connection', (socket) => {
-    console.log('New client connected');
-
-    socket.on('joinRoom', (roomId) => {
-        socket.join(roomId);
-        console.log(`User joined room ${roomId}`);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('Client disconnected');
-    });
-});
 
 // Start server
 async function startServer() {
@@ -226,6 +223,6 @@ process.on('SIGINT', async () => {
         console.log('Server closed');
         process.exit(0);
     });
-});
+})
 
 startServer();

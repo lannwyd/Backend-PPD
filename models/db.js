@@ -2,6 +2,8 @@ import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 import path from "path";
 
+dotenv.config();
+
 // Load environment variables from .env in project root
 dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 

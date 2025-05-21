@@ -74,11 +74,12 @@ function setupEventListeners() {
     // Join session button
     if (Join_session_btn) {
         Join_session_btn.onclick = function() {
+            let sessionID = Session_ID.value.trim();
             if (Session_ID.value === "") {
                 SessionID_error_message.textContent = "Session ID is required";
             } else {
                 SessionID_error_message.textContent = "";
-                window.location.href = "../TP/TP_2.html";
+                window.location.href =sessionID;
             }
         };
     }
