@@ -4,6 +4,8 @@ import Room from './Room.js';
 import Session from './Session.js';
 import JoinedUsers from './JoinedUsers.js';
 import Board from './Board.js';
+import UserHistory from './userHistory.js';
+
 
 function setupAssociations() {
     // User to Role (Many-to-One)
@@ -85,7 +87,15 @@ function setupAssociations() {
         foreignKey: 'room_id',
         as: 'userMemberships'
     });
+    User.hasMany(UserHistory, {
+        foreignKey: 'user_id',
+        as: 'history'
+    });
 
+    UserHistory.belongsTo(User, {
+        foreignKey: 'user_id',
+        as: 'user'
+    });
 }
 
 export default setupAssociations;

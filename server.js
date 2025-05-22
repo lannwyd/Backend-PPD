@@ -17,6 +17,7 @@ import { v4 as uuidv4 } from 'uuid';
 import fs from 'fs';
 
 // Routes
+import historyRoutes from "./src/routes/historyRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import roleRoutes from "./src/routes/roleRoutes.js";
 import roomRoutes from "./src/routes/roomRoutes.js";
@@ -142,6 +143,7 @@ async function initializeDatabase() {
 }
 
 // API Routes
+app.use('/api/history', historyRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/roles', roleRoutes);
 app.use('/api/rooms', roomRoutes);
@@ -153,7 +155,7 @@ app.use('/auth', authRoutes);
 // HTML Routes
 const htmlRoutes = [
     '/', '/login', '/register', '/dashboard',
-    '/profile', '/Account-verification',"/LabRoom"
+    '/profile', '/Account-verification',"/LabRoom" ,'/history'
 ];
 
 htmlRoutes.forEach(route => {
@@ -172,6 +174,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'healthy' });
 });
+
+
 
 // Error handling
 app.use((err, req, res, next) => {

@@ -51,7 +51,18 @@ async function loadUserProfile() {
 }
 
 function setupEventListeners() {
-    // Create session button
+
+
+    document.querySelectorAll('a[href]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            if (this.getAttribute('href').startsWith('/')) {
+                e.preventDefault();
+                window.location.href = this.getAttribute('href');
+            }
+        });
+    });
+
+
     if (create_session_btn) {
         create_session_btn.onclick = function() {
             if (Session_Name.value === "") {
@@ -70,6 +81,7 @@ function setupEventListeners() {
             }
         };
     }
+
 
     // Join session button
     if (Join_session_btn) {

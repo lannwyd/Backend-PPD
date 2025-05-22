@@ -1,16 +1,14 @@
 import { DataTypes } from "sequelize";
 import sequelize from "./db.js";
 
-
 const UserHistory = sequelize.define("UserHistory", {
     user_history_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        DefaultValue: 0,
     },
     user_id: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,  // Changed from STRING to INTEGER
         allowNull: false,
         references: {
             model: "User",
@@ -29,14 +27,14 @@ const UserHistory = sequelize.define("UserHistory", {
         type: DataTypes.STRING,
         allowNull: false,
     },
-   
     action_timestamp: {
         type: DataTypes.DATE,
         allowNull: false,
+        defaultValue: DataTypes.NOW,
     },
-
 }, {
     tableName: "UserHistory",
     timestamps: false,
-});     
+});
+
 export default UserHistory;
