@@ -1,11 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Check authentication
     checkAuth();
 
-    // Load history
     loadHistory();
 
-    // Set up event listeners
     document.getElementById('refreshBtn').addEventListener('click', loadHistory);
     document.getElementById('logoutBtn').addEventListener('click', logout);
 });
@@ -16,18 +13,34 @@ let totalPages = 1;
 async function checkAuth() {
     try {
         const response = await fetch('/auth/profile', {
-            credentials: 'include'
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            }
         });
 
         if (!response.ok) {
             window.location.href = '/login';
+            return;
+        }
+
+        const { data } = await response.json();
+
+        if (!data || !data.user || !data.role) {
+            throw new Error('Invalid profile data');
+        }
+
+        if (data.role === 'teacher' && !window.location.pathname.includes('teacher')) {
+            window.location.href = '/history/teacher';
+        } else if (data.role === 'student' && window.location.pathname.includes('teacher')) {
+            window.location.href = '/history';
         }
     } catch (error) {
+        console.error('Authentication check failed:', error);
         window.location.href = '/login';
     }
 }
 
-// Update the loadHistory function to handle pagination correctly
 async function loadHistory(page = 1) {
     try {
         showLoading();
@@ -130,7 +143,6 @@ function renderHistory(history) {
     container.classList.remove('hidden');
     noHistoryMessage.classList.add('hidden');
 
-    // Render pagination if needed
     if (totalPages > 1) {
         renderPagination();
         paginationContainer.classList.remove('hidden');
