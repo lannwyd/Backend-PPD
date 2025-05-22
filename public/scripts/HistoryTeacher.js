@@ -117,7 +117,7 @@ function renderTeacherHistory(history) {
             <td>
                 ${item.hex_file_link !== 'not available' ? `
                 <a href="${item.hex_file_link}" target="_blank" class="file-link">
-                    <span class="file-link-text">View HEX</span>
+                    <span class="file-link-text">Download HEX File</span>
                     <i class="fas fa-external-link-alt ml-1"></i>
                 </a>
                 ` : '<span class="text-[#9CA3AF]">N/A</span>'}

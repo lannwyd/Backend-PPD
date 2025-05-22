@@ -21,8 +21,8 @@
         </nav>
     </div>
     <div class="navbar-right">
-        <a href="/profile" class="dashboard-link">Profile</a>
-        <button id="logoutBtn" class="logout-btn">Logout</button>
+        <a href="/dashboard" class="dashboard-link">Dashboard</a>
+        <img src="/Documents/person.svg" alt="User" class="user-icon">
     </div>
 </header>
 
@@ -64,6 +64,30 @@
 
         <div id="paginationContainer" class="pagination-container"></div>
     </div>
+    <div class="room-management">
+        <div class="room-control">
+            <h3>Create Room</h3>
+            <div class="room-input-group">
+                <input type="text" placeholder="Room Name" class="room-input">
+                <button class="room-button">Create</button>
+            </div>
+            <div class="room-id-section">
+                <span>Room ID:</span>
+                <span class="room-id">Q43Sf5</span>
+                <img src="/Documents/copy.svg" alt="Copy" class="copy-icon">
+            </div>
+        </div>
+
+        <div class="room-control">
+            <h3>Join Room</h3>
+            <div class="room-input-group">
+                <input type="text" placeholder="Room ID" class="room-input">
+                <button class="room-button">Join</button>
+            </div>
+        </div>
+    </div>
+
+
 </div>
 
 <script src="/scripts/HistoryTeacher.js"></script>
