@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher History Dashboard</title>
+    <link rel="stylesheet" href="/styles/HistoryTeacher.css">
+</head>
+<body>
+<header class="navbar">
+    <div class="navbar-left">
+        <img src="/Documents/Frame.svg" alt="Logo" class="logo">
+        <span class="brand">IoT Lab</span>
+        <nav class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="#">Documentation</a>
+            <a href="/history/teacher">History</a>
+        </nav>
+    </div>
+    <div class="navbar-right">
+        <a href="/dashboard" class="dashboard-link">Dashboard</a>
+        <img src="/Documents/person.svg" alt="User" class="user-icon">
+    </div>
+</header>
+
+<div class="dashboard">
+    <div class="history-container">
+        <div class="history-header">
+            <h2>Student History</h2>
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search students..." id="searchInput">
+            </div>
+        </div>
+
+        <div id="loadingIndicator" class="loading-indicator hidden">
+            <i class="fas fa-spinner fa-spin"></i> Loading...
+        </div>
+
+        <div id="noHistoryMessage" class="no-history-message hidden">
+            <i class="fas fa-history"></i> No history records found.
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>Student Name</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Student ID</th>
+                    <th>INO File</th>
+                    <th>HEX File</th>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="paginationContainer" class="pagination-container"></div>
+    </div>
+    <div class="room-management">
+        <div class="room-control">
+            <h3>Create Room</h3>
+            <div class="room-input-group">
+                <input type="text" placeholder="Room Name" class="room-input">
+                <button class="room-button">Create</button>
+            </div>
+            <div class="room-id-section">
+                <span>Room ID:</span>
+                <span class="room-id">Q43Sf5</span>
+                <img src="/Documents/copy.svg" alt="Copy" class="copy-icon">
+            </div>
+        </div>
+
+        <div class="room-control">
+            <h3>Join Room</h3>
+            <div class="room-input-group">
+                <input type="text" placeholder="Room ID" class="room-input">
+                <button class="room-button">Join</button>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<script src="/scripts/HistoryTeacher.js"></script>
+</body>
+</html>

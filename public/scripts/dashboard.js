@@ -11,7 +11,6 @@ const logoutLink = document.getElementById("logoutLink");
 const profileInitials = document.getElementById("profileInitials");
 const welcomeMessage = document.getElementById("welcom_back");
 
-// Initialize dashboard
 document.addEventListener('DOMContentLoaded', function() {
     loadUserProfile();
     setupEventListeners();
@@ -31,18 +30,15 @@ async function loadUserProfile() {
         const user = data.user;
         const role = data.role;
 
-        // Update welcome message
         if (welcomeMessage) {
             welcomeMessage.textContent = `Welcome back, ${user.first_name}!`;
         }
 
-        // Update profile initials
         if (profileInitials) {
             const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
             profileInitials.textContent = initials;
         }
 
-        // Store user role in localStorage
         localStorage.setItem('userRole', role);
     } catch (error) {
         console.error('Profile load error:', error);
@@ -131,7 +127,6 @@ function setupEventListeners() {
     }
 
 
-    // Join session button
     if (Join_session_btn) {
         Join_session_btn.onclick = function() {
             let sessionID = Session_ID.value.trim();
@@ -147,7 +142,6 @@ function setupEventListeners() {
         };
     }
 
-    // Profile link
     if (profileLink) {
         profileLink.addEventListener('click', function(e) {
             e.preventDefault();
@@ -155,8 +149,6 @@ function setupEventListeners() {
         });
     }
 
-    // Logout link
-    // Logout link
     if (logoutLink) {
         logoutLink.addEventListener('click', async function(e) {
             e.preventDefault();
@@ -164,14 +156,12 @@ function setupEventListeners() {
             try {
                 const response = await fetch('/auth/logout', {
                     method: 'POST',
-                    credentials: 'include'  // Important for cookies
+                    credentials: 'include'
                 });
 
                 if (response.ok) {
-                    // Clear client-side storage if needed
                     localStorage.removeItem('userRole');
 
-                    // Redirect to login page
                     window.location.href = '/login';
                 } else {
                     throw new Error('Logout failed');
@@ -183,7 +173,6 @@ function setupEventListeners() {
         });
     }
 
-    // Sidebar toggle
     const sid_icon = document.getElementById("sid_icon");
     const Aside = document.getElementById("Aside");
     const Main = document.getElementById("Main");
@@ -206,7 +195,6 @@ function setupEventListeners() {
         };
     }
 
-    // Style results
     const results = document.querySelectorAll('[id^="res"]');
     results.forEach(res => {
         if (res.textContent.trim() === 'Failed') {

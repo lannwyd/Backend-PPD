@@ -156,12 +156,15 @@ app.use('/auth', authRoutes);
 // HTML Routes
 const htmlRoutes = [
     '/', '/login', '/register', '/dashboard',
-    '/profile', '/Account-verification',"/LabRoom" ,'/history'
+    '/profile', '/Account-verification',"/LabRoom",
+    '/history', '/history/teacher'
 ];
 
 htmlRoutes.forEach(route => {
     app.get(route, (req, res) => {
-        const file = route === '/' ? 'Home.html' : `${route.replace('/', '')}.html`;
+        const file = route === '/' ? 'Home.html' :
+            route === '/history/teacher' ? 'HistoryTeacher.html' :
+                `${route.replace('/', '')}.html`;
         res.sendFile(path.join(__dirname, 'public', file));
     });
 });
