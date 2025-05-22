@@ -485,7 +485,7 @@ server.listen(PORT, async () => {
     await initializeDatabase();
     console.log(` Lab Server running on port ${PORT}`);
   } catch (error) {
-    console.error("❌ Server startup failed:", error);
+    console.error("Server startup failed:", error);
     process.exit(1);
   }
 });

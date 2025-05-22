@@ -10,12 +10,12 @@ const JoinedUsers = sequelize.define("JoinedUsers", {
             key: "user_id",
         },
     },
-    room_id: {
+    session_id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         references: {
-            model: "Room",
-            key: "room_id",
+            model: "Session",
+            key: "session_id",
         },
     },
 }, {

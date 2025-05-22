@@ -7,12 +7,18 @@ const Session = sequelize.define("Session", {
         primaryKey: true,
         autoIncrement: true,
     },
-    room_id: {
-        type: DataTypes.INTEGER,
+    session_name: {
+        type: DataTypes.STRING,
         allowNull: false,
-        references: {
-            model: "Room",
-            key: "room_id",
+        validate: {
+            len: [1, 255],
+        },
+    },
+    description: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        validate: {
+            len: [1, 255],
         },
     },
     session_date: {
@@ -21,11 +27,11 @@ const Session = sequelize.define("Session", {
     },
     session_start_time: {
         type: DataTypes.TIME,
-        allowNull: false,
+        allowNull: true,
     },
     session_end_time: {
         type: DataTypes.TIME,
-        allowNull: false,
+        allowNull: true,
         validate: {
             isAfterStartTime(value) {
                 if (value <= this.session_start_time) {

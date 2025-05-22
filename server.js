@@ -97,6 +97,7 @@ app.use(
           "'self'",
           "http://localhost:4000",
           "ws://localhost:4000",
+          "http://localhost:3000"
         ],
         workerSrc: ["'self'", "blob:"],
         imgSrc: ["'self'", "data:"],

@@ -6,7 +6,10 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:server1": "nodemon server.js",
     "start:server2": "nodemon LabServer.js",
-    "start:both": "concurrently \"npm run start:server1\" \"npm run start:server2\""
+    "start:server3": "nodemon meet.js",
+    "start:both": "concurrently \"npm run start:server1\" \"npm run start:server2\"",
+    "start:servers": "concurrently \"npm run start:server1\" \"npm run start:server3\"",
+    "start:all": "concurrently \"npm run start:server1\" \"npm run start:server2\" \"npm run start:server3\""
   },
   "type": "module",
   "keywords": [],
@@ -35,6 +38,7 @@
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "peer": "^1.0.2",
     "sequelize": "^6.37.6",
     "serialport": "^13.0.0",
     "socket.io": "^4.8.1",

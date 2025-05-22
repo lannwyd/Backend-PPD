@@ -49,7 +49,7 @@ async function loadUserProfile() {
         window.location.href = '/login';
     }
 }
-
+let dataform;
 function setupEventListeners() {
 
 
@@ -76,10 +76,58 @@ function setupEventListeners() {
             } else {
                 Description_error_message.textContent = "";
                 if (Session_Name.value !== "") {
-                    window.location.href = "../TP/TP_2.html";
+                    
                 }
             }
+             dataform = {
+            sessionName: Session_Name.value,
+            description: Description.value
         };
+        createSession();
+     
+        };
+       
+
+       
+    }
+    async function createSession() {
+        try {
+            const response = await fetch('http://localhost:3000/create-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataform)
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to create session');
+            }
+
+            const { sessionId } = await response.json();
+            document.querySelector('.sessionid').textContent = `Session ID: ${sessionId}`;
+            window.location.href = `http://localhost:3000/${sessionId}`;
+        } catch (error) {
+            console.error('Session creation error:', error);
+        }
+    }
+
+    async function joinSession(sessionID) {
+        try {
+            const response = await fetch(`http://localhost:3000/${sessionID}`, {
+                method: 'GET',
+                
+                
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to join session');
+            }
+
+            window.location.href = `http://localhost:3000/${sessionID}`;
+        } catch (error) {
+            console.error('Session joining error:', error);
+        }
     }
 
 
@@ -89,9 +137,12 @@ function setupEventListeners() {
             let sessionID = Session_ID.value.trim();
             if (Session_ID.value === "") {
                 SessionID_error_message.textContent = "Session ID is required";
-            } else {
+            } else if(sessionID=="LabRoom"){
+                window.location.href = `http://localhost:5000/LabRoom`;
+              
+            }else {
                 SessionID_error_message.textContent = "";
-                window.location.href =sessionID;
+                joinSession(sessionID);
             }
         };
     }
