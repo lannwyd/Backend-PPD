@@ -45,6 +45,7 @@ async function loadHistory(page = 1) {
         const response = await fetch(`/api/history?page=${page}`, {
             credentials: 'include'
         });
+       
 
         if (!response.ok) {
             throw new Error('Failed to fetch history');
@@ -52,6 +53,7 @@ async function loadHistory(page = 1) {
 
         const { data, pagination } = await response.json();
         totalPages = pagination?.totalPages || 1;
+        console.log('History data:', data);
         renderHistory(data);
 
     } catch (error) {
@@ -62,7 +64,7 @@ async function loadHistory(page = 1) {
     }
 }
 
-function renderHistory(history) {
+async function renderHistory(history) {
     const container = document.getElementById('experimentContainer');
     const noHistoryMessage = document.getElementById('noHistoryMessage');
     const paginationContainer = document.getElementById('paginationContainer');
@@ -71,6 +73,7 @@ function renderHistory(history) {
         container.classList.add('hidden');
         paginationContainer.classList.add('hidden');
         noHistoryMessage.classList.remove('hidden');
+
         return;
     }
 
@@ -90,15 +93,14 @@ function renderHistory(history) {
                 </div>
             </div>
             <div class="bg-[#1F2937] rounded-lg p-4">
-                <div class="text-[#9CA3AF] p-4 rounded-lg text-sm bg-[#0D131F] whitespace-pre-wrap break-words">
-                    ${item.code_content ? item.code_content.replace(/</g, '&lt;').replace(/>/g, '&gt;') : 'cloudinary'}
-                </div>
+              <div id="code-${item.user_history_id}" class="text-[#9CA3AF] p-4 rounded-lg text-sm bg-[#0D131F] whitespace-pre-wrap break-words">Loading code...</div>
+
                 <div class="flex items-center mt-4">
                     <div class="flex items-center">
                         <svg class="w-4 h-4 mr-2 text-[#9CA3AF]" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
-                        <span class="text-[#9CA3AF] text-sm">Duration: ${item.duration ? formatDuration(item.duration) : ''}</span>
+                      
                     </div>
                     <div class="ml-auto flex items-center space-x-4">
                         <div class="flex space-x-2">
@@ -118,6 +120,22 @@ function renderHistory(history) {
 
 
     `).join('');
+    for (const item of history) {
+    if (item.ino_file_link && item.ino_file_link.startsWith("http")) {
+        const codeElement = document.getElementById(`code-${item.user_history_id}`);
+        if (codeElement) {
+            try {
+                const res = await fetch(item.ino_file_link);
+                if (!res.ok) throw new Error("Failed to fetch code");
+                const text = await res.text();
+                codeElement.innerText = text;
+            } catch (err) {
+                codeElement.innerText = "Error loading code from Cloudinary.";
+            }
+        }
+    }
+}
+
 
     container.classList.remove('hidden');
     noHistoryMessage.classList.add('hidden');

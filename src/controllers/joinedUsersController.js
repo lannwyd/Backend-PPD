@@ -1,6 +1,6 @@
 import JoinedUsers from "../../models/JoinedUsers.js";
 import User from "../../models/User.js";
-import Room from "../../models/Room.js";
+import Session from "../../models/Session.js";
 import { Op } from 'sequelize';
 
 const respond = (res, status, data, message = '') => {
@@ -12,16 +12,16 @@ const respond = (res, status, data, message = '') => {
 
 export const getJoinedUsersByRoom = async (req, res) => {
     try {
-        const { roomId } = req.params;
+        const { sessionid } = req.params;
 
         // Verify room exists
-        const roomExists = await Room.findByPk(roomId);
-        if (!roomExists) {
+        const Sessionexists = await Session.findByPk(sessionid);
+        if (!Sessionexists) {
             return respond(res, 404, null, 'Room not found');
         }
 
         const joinedUsers = await JoinedUsers.findAll({
-            where: { room_id: roomId },
+            where: { Session_id: sessionid},
             include: [{
                 model: User,
                 attributes: ['user_id', 'first_name', 'last_name', 'email', 'role_id']
@@ -48,7 +48,7 @@ export const getRoomsByUser = async (req, res) => {
         const joinedRooms = await JoinedUsers.findAll({
             where: { user_id: userId },
             include: [{
-                model: Room,
+                model: Session,
                 include: [{
                     model: User,
                     as: 'creator',
@@ -66,17 +66,17 @@ export const getRoomsByUser = async (req, res) => {
 
 export const joinUserToRoom = async (req, res) => {
     try {
-        const { room_id } = req.body;
+        const { sessionid } = req.body;
         const user_id = req.user.user_id; // Get from authenticated user
 
         // Check if room exists and is active
-        const room = await Room.findOne({
+        const session = await Session.findOne({
             where: {
-                room_id,
+                sessionid,
                 is_active: true
             }
         });
-        if (!room) {
+        if (!session) {
             return respond(res, 404, null, 'Room not found or not active');
         }
 
@@ -112,19 +112,19 @@ export const joinUserToRoom = async (req, res) => {
 
 export const leaveRoom = async (req, res) => {
     try {
-        const { roomId } = req.params;
+        const { sessionid } = req.params;
         const user_id = req.user.user_id; // Get from authenticated user
 
         // Check if user is in the room
         const joinedRecord = await JoinedUsers.findOne({
-            where: { user_id, room_id: roomId }
+            where: { user_id, session_id: sessionid}
         });
         if (!joinedRecord) {
             return respond(res, 404, null, 'You are not in this room');
         }
 
         // Prevent creator from leaving (optional)
-        const room = await Room.findByPk(roomId);
+        const room = await Session.findByPk(sessionid);
         if (room && room.room_creator_id === user_id) {
             return respond(res, 403, null, 'Room creator cannot leave the room');
         }
@@ -142,7 +142,7 @@ export const removeUserFromRoom = async (req, res) => {
         const currentUserId = req.user.user_id; // Get from authenticated user
 
         // Verify requesting user has permission (creator or admin)
-        const room = await Room.findByPk(roomId);
+        const room = await Session.findByPk(roomId);
         if (!room) {
             return respond(res, 404, null, 'Room not found');
         }

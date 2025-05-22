@@ -20,10 +20,10 @@ import fs from 'fs';
 import historyRoutes from "./src/routes/historyRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import roleRoutes from "./src/routes/roleRoutes.js";
-import roomRoutes from "./src/routes/roomRoutes.js";
+
 import sessionRoutes from "./src/routes/sessionRoutes.js";
 import joinedUsersRoutes from "./src/routes/joinedUsersRoutes.js";
-import boardRoutes from "./src/routes/boardRoutes.js";
+
 import authRoutes from './src/routes/authRoutes.js';
 import * as userController from "./src/controllers/userController.js";
 import {protect} from "./src/controllers/authController.js";
@@ -92,12 +92,14 @@ app.use(
           "'self'",
           "https://cdnjs.cloudflare.com",
           "https://fonts.gstatic.com",
+          
         ],
         connectSrc: [
           "'self'",
           "http://localhost:4000",
           "ws://localhost:4000",
-          "http://localhost:3000"
+          "http://localhost:3000",
+          "https://res.cloudinary.com/" ,
         ],
         workerSrc: ["'self'", "blob:"],
         imgSrc: ["'self'", "data:"],
@@ -147,10 +149,10 @@ async function initializeDatabase() {
 app.use('/api/history', historyRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/roles', roleRoutes);
-app.use('/api/rooms', roomRoutes);
+
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/members', joinedUsersRoutes);
-app.use('/api/board' , boardRoutes );
+
 app.use('/auth', authRoutes);
 
 // HTML Routes

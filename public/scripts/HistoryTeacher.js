@@ -37,6 +37,7 @@ async function checkAuthAndRole() {
         }
 
         const { data } = await response.json();
+        console.log('User data:', data);
 
         const isTeacherHistoryPage = window.location.pathname === '/history/teacher';
 
