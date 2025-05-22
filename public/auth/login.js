@@ -68,13 +68,13 @@ document.addEventListener('DOMContentLoaded', function() {
             signInButton.textContent = 'Signing in...';
 
             // Remember me functionality
-            if (document.getElementById('agree').checked) {
-                localStorage.setItem('email', email);
-                localStorage.setItem('password', password);
-            } else {
-                localStorage.removeItem('email');
-                localStorage.removeItem('password');
-            }
+            // if (document.getElementById('agree').checked) {
+            //     localStorage.setItem('email', email);
+            //     localStorage.setItem('password', password);
+            // } else {
+            //     localStorage.removeItem('email');
+            //     localStorage.removeItem('password');
+            // }
 
             // API call
             const response = await fetch('/auth/login', {
@@ -104,6 +104,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             // Store token and redirect
+            localStorage.setItem('token', data.token);
+          
             localStorage.setItem('userRole', data.data.role);
 
             window.location.href = '/dashboard';

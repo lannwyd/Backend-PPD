@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let socket;
     function checkwebtocken() {
-        const token = localStorage.getItem('jwt');
+        const token = localStorage.getItem('token');
         if (!token) {
             console.error("No JWT token found in localStorage");
             window.location.href = '/login';
