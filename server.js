@@ -79,7 +79,7 @@ app.use(
           "'unsafe-eval'",
           "https://cdnjs.cloudflare.com",
           "https://cdn.socket.io",
-           "https://cdn.tailwindcss.com"
+           "https://cdn.tailwindcss.com",
         ],
         styleSrc: [
           "'self'",

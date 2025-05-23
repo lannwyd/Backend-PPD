@@ -11,6 +11,7 @@ import Session from "./models/Session.js";
 import JoinedUsers from "./models/JoinedUsers.js";
 import { protect } from "./src/controllers/authController.js";
 
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -45,12 +46,12 @@ const io = new Server(server, {
   transports: ['websocket', 'polling']
 });
 
-// Configure CORS for Express
+
 app.use(cors({
-  origin: '*'
+  origin: ['http://localhost:3000', 'http://localhost:4000'],
 }));
 
-// Create PeerJS server
+
 const peerServer = ExpressPeerServer(server, {
   debug: true,
 });
@@ -70,7 +71,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'meeting.html'));
 });
 
-app.post('/create-session' ,async (req, res) => {
+app.post('/create-session' ,protect,async (req, res) => {
   try {
     console.log('Create session request:', req.body);
     const { sessionName, description } = req.body;
@@ -107,7 +108,7 @@ app.post('/create-session' ,async (req, res) => {
   }
 });
 
-app.get('/:sessionId' ,(req, res) => {
+app.get('/:sessionId' ,protect,(req, res) => {
   const { sessionId } = req.params;
   if (sessions.has(sessionId)) {
     res.sendFile(path.join(__dirname, 'public', 'meeting.html'));

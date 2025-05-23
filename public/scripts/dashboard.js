@@ -46,6 +46,7 @@ async function loadUserProfile() {
     }
 }
 let dataform;
+
 function setupEventListeners() {
 
 
@@ -79,6 +80,7 @@ function setupEventListeners() {
             sessionName: Session_Name.value,
             description: Description.value
         };
+       
         createSession();
      
         };
@@ -91,8 +93,10 @@ function setupEventListeners() {
             const response = await fetch('http://localhost:3000/create-session', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    
                 },
+                credentials: 'include',
                 body: JSON.stringify(dataform)
             });
 
@@ -112,6 +116,10 @@ function setupEventListeners() {
         try {
             const response = await fetch(`http://localhost:3000/${sessionID}`, {
                 method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
                 
                 
             });

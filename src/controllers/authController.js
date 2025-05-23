@@ -334,16 +334,19 @@ export const protect = async (req, res, next) => {
     } catch (error) {
         console.error('Authentication error:', error);
         if (error.name === 'TokenExpiredError') {
+               
             return res.status(401).json({
                 error: 'Your session has expired. Please log in again.',
                 expired: true
             });
         }
         if (error.name === 'JsonWebTokenError') {
+           
             return res.status(401).json({
                 error: 'Invalid token. Please log in again.',
                 invalid: true
             });
+           
         }
         res.status(401).json({ error: 'Authentication failed' });
     }
