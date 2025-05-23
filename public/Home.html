@@ -4,227 +4,427 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>History</title>
+    <title>IoT Lab</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="scripts/Home.js" ></script>
+    <link rel="stylesheet" href="./styles/animations.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <style>
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0F172A;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #162135;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
 </head>
 
-<body class="bg-[#111927]">
+<body class="bg-[#111927] text-white">
     <div class="min-h-screen bg-[#111927] text-white">
-        <header class="sticky top-0 z-10 border-b border-gray-800 bg-[#111927]/95 backdrop-blur">
+        <!-- Navigation Bar -->
+        <header class="sticky top-0 z-50 border-b border-gray-800 bg-[#111927]/95 backdrop-blur">
             <div class="container mx-auto flex h-16 items-center justify-between px-4">
                 <div class="flex items-center gap-2">
-                    <img src="..\Documents\mic-white.png" alt="IoT Document" width="18">
+                    <img src="./Documents/IoT9ff.svg" alt="IoT Logo" class="h-6 w-6 " />
                     <span class="text-xl font-bold">IoT Lab</span>
                 </div>
-                <nav class="hidden md:block ml-16" >
-                    <ul class="flex items-center gap-6">
-                        <li><a href="Home.html" class="text-gray-300 hover:text-[#9FEF00] transition-colors">Home</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-[#9FEF00] transition-colors">Documentation</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-[#9FEF00] transition-colors">History</a></li>
-                        
+
+                <nav class="hidden md:block">
+                    <ul class="flex items-center gap-6 ml-16">
+
+                        <!-- <li>
+                            <a href="#" class="text-gray-300 hover:text-[#9FEF00] transition-colors">
+                                Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-300 hover:text-[#9FEF00] transition-colors">
+                                History
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#" class="text-gray-300 hover:text-[#9FEF00] transition-colors">
+                                Documentation
+                            </a>
+                        </li> -->
                     </ul>
                 </nav>
-                <div class="flex items-center gap-4"><a href="login.html"><button
-                        class="items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 border bg-background h-10 px-4 py-2 hidden border-gray-700 text-gray-300 hover:bg-gray-800 hover:text-white md:flex">Sign
-                        In </button></a><a href="register.html"><button
-                        class="items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 h-10 px-4 py-2 hidden bg-[#9FEF00] text-[#111927] hover:bg-[#8BDF00] md:flex">Get
-                        Started </button></a><button
-                        class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent hover:text-accent-foreground h-10 w-10 md:hidden"><svg
-                            xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+
+                <div class="flex items-center gap-4">
+                   <a href="login.html"> <button
+                        class="rounded-xl font-semibold border border-gray-700 bg-transparent px-4 py-2 text-gray-300 transition-all duration-300 hover:border-[#9FEF00] hover:text-[#9FEF00] hover:shadow-[0_0_15px_rgba(159,239,0,0.2)]">
+                        Sign In
+                    </button></a>
+                   <a href="register.html"> <button
+                        class="rounded-xl font-semibold bg-gradient-to-r from-[#9FEF00] to-[#8BDF00] px-4 py-2 text-[#111927] shadow-[0_0_15px_rgba(159,239,0,0.3)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(159,239,0,0.5)]">Get
+                        Started</button></a>
+                    <button class="md:hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-menu h-6 w-6">
+                            class="h-6 w-6">
                             <line x1="4" x2="20" y1="12" y2="12"></line>
                             <line x1="4" x2="20" y1="6" y2="6"></line>
                             <line x1="4" x2="20" y1="18" y2="18"></line>
-                        </svg><span class="sr-only">Toggle menu</span></button></div>
+                        </svg>
+                        <span class="sr-only">Toggle menu</span>
+                    </button>
+                </div>
             </div>
         </header>
-        <main class="container mx-auto px-4 py-12">
-            <section class="relative mb-20 flex flex-col items-center justify-center py-12 text-center">
-                <div
-                    class="absolute left-1/2 top-1/2 h-64 w-64 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#9FEF00]/10 blur-3xl">
-                </div>
-                <div class="absolute left-1/4 top-1/3 h-32 w-32 rounded-full bg-[#9FEF00]/5 blur-xl"></div>
-                <div class="absolute right-1/4 bottom-1/3 h-48 w-48 rounded-full bg-[#9FEF00]/5 blur-xl"></div>
-                <div class="relative mb-6 inline-block">
-                    <div class="absolute inset-0 flex items-center justify-center">
-                        <div class="h-24 w-24 animate-pulse rounded-full bg-[#9FEF00]/20 blur-xl"></div>
-                    </div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-zap relative h-16 w-16 text-[#9FEF00]">
-                        <path
-                            d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z">
-                        </path>
-                    </svg>
-                </div>
-                <h1 class="relative mb-4 text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl"><span
-                        class="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">Remote IoT
-                        Lab</span><span class="block text-[#9FEF00]">Practical Experience</span></h1>
-                <p class="relative mb-8 max-w-2xl text-gray-400">Access cutting-edge IoT equipment and conduct
-                    experiments remotely. Learn, build, and innovate from anywhere in the world.</p>
+
+        <main class="container mx-auto px-4">
+            <!-- Hero Section with Remote Arduino Programming Visualization -->
+            <section
+                class=" hero-section relative -mx-4 -mt-12 mb-20 flex min-h-[90vh] flex-col items-center justify-center py-16 text-center">
+
+                <!-- Content overlay - Centered in the middle -->
+                <div class="relative z-20 ">
+                    <div class="relative mb-6 inline-block" data-aos="fade-down">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <div class="h-24 w-24 animate-pulse rounded-full bg-[#9FEF00]/20 blur-xl"></div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="relative h-16 w-16 text-[#9FEF00] drop-shadow-[0_0_10px_rgba(159,239,0,0.8)]">
+                            <path
+                                d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z">
+                            </path>
+                        </svg>
+                    </div>
+
+                    <h1 class="relative mb-4 text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl"
+                        data-aos="fade" data-aos-delay="50">
+                        <span
+                            class="bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent drop-shadow-sm">
+                            Remote IoT Lab
+                        </span>
+                        <span class="block text-[#9FEF00] drop-shadow-[0_0_5px_rgba(159,239,0,0.5)]">
+                            Practical Experience
+                        </span>
+                    </h1>
+
+                    <p class="relative mb-8 max-w-2xl text-gray-400" data-aos="fade" data-aos-delay="100">
+                        Access cutting-edge IoT equipment and conduct experiments remotely. Learn, build, and innovate
+                        from
+                        anywhere in the world.
+                    </p>
+
                     <a href="register.html"><button
-                    class="inline-flex items-center justify-center gap-2 whitespace-nowrap ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 h-10 relative rounded-xl bg-[#9FEF00] px-8 py-6 text-lg font-semibold text-[#111927] hover:bg-[#8BDF00]">Start
-                    Experimenting</button></a>  
+                        class="rounded-xl mt-2 bg-gradient-to-r from-[#9FEF00] to-[#8BDF00] px-10 py-2 text-[#111927] font-semibold shadow-[0_0_15px_rgba(159,239,0,0.3)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(159,239,0,0.5)]"
+                        data-aos="zoom-in">Start
+                        Experimenting</button></a>
+                </div>
             </section>
+            <!-- Tilted image -->
+            <section class="py-16 mb-12 bg-[#111927]">
+                <div data-aos="fade-up" data-aos-delay="50" class="flex justify-center gap-8 ">
+                    <img src="./Documents/Frame 71.svg" alt="Write code"
+                        class="h-[92px] transition-transform duration-300 hover:scale-105" />
+                    <img src="./Documents/Frame 73.svg" alt="Live feed"
+                        class="h-[92px] transition-transform duration-300 hover:scale-105" />
+                </div>
+                <div class="container mx-auto px-4">
+                    <!-- Screenshot Section -->
+                    <div class="flex max-w-full cursor-pointer items-center justify-center gap-4" data-aos="fade-up"
+                        data-aos-delay="50">
+                        <div id="screenshot"
+                            class="group relative mb-[30px] max-w-[1050px] transition-transform duration-[50ms] ease-[cubic-bezier(0.25, 1, 0.5, 1)] border-2 border-[#374151] rounded  shadow-lg will-change-transform">
+                            <img src="./Documents/page.jpg" alt="Platform Screenshot" class="w-full rounded-lg" />
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <!-- Platform Features Section -->
             <section class="mb-20">
-                <h2 class="mb-12 text-center text-3xl font-bold">Platform Features</h2>
+                <h2 class="mb-12 text-center text-3xl font-bold">Platform <span class="text-[#9FEF00]">Features</span>
+                </h2>
+
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
-                    <div class="border text-card-foreground shadow-sm rounded-xl border-gray-800 bg-gray-900/50 transition-all hover:border-[#9FEF00]/50 hover:shadow-lg hover:shadow-[#9FEF00]/10"
-                        data-v0-t="card">
-                        <div class="flex flex-col space-y-1.5 p-6 pb-2">
-                            <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-[#9FEF00]/10"><svg
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                    <!-- Card 1 -->
+                    <div class="rounded-xl border border-gray-800 bg-gray-900/50 transition-all hover:border-[#9FEF00]/50 hover:shadow-lg hover:shadow-[#9FEF00]/10"
+                        data-aos="fade-up" data-aos-delay="0">
+                        <div class="pb-2 p-6">
+                            <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-[#9FEF00]/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-flask-conical h-6 w-6 text-[#9FEF00]">
+                                    stroke-linejoin="round" class="h-6 w-6 text-[#9FEF00]">
                                     <path
                                         d="M10 2v7.527a2 2 0 0 1-.211.896L4.72 20.55a1 1 0 0 0 .9 1.45h12.76a1 1 0 0 0 .9-1.45l-5.069-10.127A2 2 0 0 1 14 9.527V2">
                                     </path>
                                     <path d="M8.5 2h7"></path>
                                     <path d="M7 16h10"></path>
-                                </svg></div>
-                            <h3 class="font-semibold tracking-tight text-lg">Virtual Labs</h3>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold">Live Arduino Lab</h3>
                         </div>
                         <div class="p-6 pt-0">
-                            <p class="text-sm text-gray-400">Access and control real IoT equipment through our virtual
-                                laboratory interface.</p>
+                            <p class="text-sm text-gray-400">
+                                Upload code to real Arduino boards and watch them run live via video stream.
+                            </p>
                         </div>
                     </div>
-                    <div class="border text-card-foreground shadow-sm rounded-xl border-gray-800 bg-gray-900/50 transition-all hover:border-[#9FEF00]/50 hover:shadow-lg hover:shadow-[#9FEF00]/10"
-                        data-v0-t="card">
-                        <div class="flex flex-col space-y-1.5 p-6 pb-2">
-                            <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-[#9FEF00]/10"><svg
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+
+                    <!-- Card 2 -->
+                    <div class="rounded-xl border border-gray-800 bg-gray-900/50 transition-all hover:border-[#9FEF00]/50 hover:shadow-lg hover:shadow-[#9FEF00]/10"
+                        data-aos="fade-up" data-aos-delay="100">
+                        <div class="pb-2 p-6">
+                            <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-[#9FEF00]/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-code h-6 w-6 text-[#9FEF00]">
+                                    stroke-linejoin="round" class="h-6 w-6 text-[#9FEF00]">
                                     <polyline points="16 18 22 12 16 6"></polyline>
                                     <polyline points="8 6 2 12 8 18"></polyline>
-                                </svg></div>
-                            <h3 class="font-semibold tracking-tight text-lg">Code Editor</h3>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold">Code Editor</h3>
                         </div>
                         <div class="p-6 pt-0">
-                            <p class="text-sm text-gray-400">Write, test, and deploy code directly to IoT devices from your browser.</p>
+                            <p class="text-sm text-gray-400">
+                                Write and compile Arduino code in your browser before deploying it to real hardware.
+                            </p>
                         </div>
                     </div>
-                    <div class="border text-card-foreground shadow-sm rounded-xl border-gray-800 bg-gray-900/50 transition-all hover:border-[#9FEF00]/50 hover:shadow-lg hover:shadow-[#9FEF00]/10"
-                        data-v0-t="card">
-                        <div class="flex flex-col space-y-1.5 p-6 pb-2">
-                            <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-[#9FEF00]/10"><svg
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+
+                    <!-- Card 3 -->
+                    <div class="rounded-xl border border-gray-800 bg-gray-900/50 transition-all hover:border-[#9FEF00]/50 hover:shadow-lg hover:shadow-[#9FEF00]/10"
+                        data-aos="fade-up" data-aos-delay="200">
+                        <div class="pb-2 p-6">
+                            <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-[#9FEF00]/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-database h-6 w-6 text-[#9FEF00]">
-                                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                                    <path d="M3 5V19A9 3 0 0 0 21 19V5"></path>
-                                    <path d="M3 12A9 3 0 0 0 21 12"></path>
-                                </svg></div>
-                            <h3 class="font-semibold tracking-tight text-lg">Data Analysis</h3>
+                                    stroke-linejoin="round" class="h-6 w-6 text-[#9FEF00]">
+                                    <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                    <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                    <line x1="6" y1="6" x2="6" y2="6"></line>
+                                    <line x1="6" y1="18" x2="6" y2="18"></line>
+                                    <path d="M10 6h4"></path>
+                                    <path d="M10 18h4"></path>
+                                    <path d="M18 6h.01"></path>
+                                    <path d="M18 18h.01"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold">Remote Device Monitoring</h3>
                         </div>
                         <div class="p-6 pt-0">
-                            <p class="text-sm text-gray-400">Collect and visualize sensor data in real-time with
-                                powerful analytics tools.</p>
+                            <p class="text-sm text-gray-400">
+                                Observe sensor readings and control basic IoT device functions in real-time.
+                            </p>
                         </div>
                     </div>
-                    <div class="border text-card-foreground shadow-sm rounded-xl border-gray-800 bg-gray-900/50 transition-all hover:border-[#9FEF00]/50 hover:shadow-lg hover:shadow-[#9FEF00]/10"
-                        data-v0-t="card">
-                        <div class="flex flex-col space-y-1.5 p-6 pb-2">
-                            <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-[#9FEF00]/10"><svg
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+
+                    <!-- Card 4 -->
+                    <div class="rounded-xl border border-gray-800 bg-gray-900/50 transition-all hover:border-[#9FEF00]/50 hover:shadow-lg hover:shadow-[#9FEF00]/10"
+                        data-aos="fade-up" data-aos-delay="300">
+                        <div class="pb-2 p-6">
+                            <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-[#9FEF00]/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-layout-grid h-6 w-6 text-[#9FEF00]">
-                                    <rect width="7" height="7" x="3" y="3" rx="1"></rect>
-                                    <rect width="7" height="7" x="14" y="3" rx="1"></rect>
-                                    <rect width="7" height="7" x="14" y="14" rx="1"></rect>
-                                    <rect width="7" height="7" x="3" y="14" rx="1"></rect>
-                                </svg></div>
-                            <h3 class="font-semibold tracking-tight text-lg">Project Gallery</h3>
+                                    stroke-linejoin="round" class="h-6 w-6 text-[#9FEF00]">
+                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                                    <path d="M3 3v5h5"></path>
+                                    <path d="M12 7v5l4 2"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold">Experiment History</h3>
                         </div>
                         <div class="p-6 pt-0">
-                            <p class="text-sm text-gray-400">Showcase your projects and explore work from other IoT
-                                enthusiasts.</p>
+                            <p class="text-sm text-gray-400">
+                                View past experiments, code submissions, and check if each attempt succeeded.
+                            </p>
                         </div>
                     </div>
-                    <div class="border text-card-foreground shadow-sm rounded-xl border-gray-800 bg-gray-900/50 transition-all hover:border-[#9FEF00]/50 hover:shadow-lg hover:shadow-[#9FEF00]/10"
-                        data-v0-t="card">
-                        <div class="flex flex-col space-y-1.5 p-6 pb-2">
-                            <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-[#9FEF00]/10"><svg
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+
+                    <!-- Card 5 -->
+                    <div class="rounded-xl border border-gray-800 bg-gray-900/50 transition-all hover:border-[#9FEF00]/50 hover:shadow-lg hover:shadow-[#9FEF00]/10"
+                        data-aos="fade-up" data-aos-delay="400">
+                        <div class="pb-2 p-6">
+                            <div class="mb-2 flex h-12 w-12 items-center justify-center rounded-lg bg-[#9FEF00]/10">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-layers h-6 w-6 text-[#9FEF00]">
+                                    stroke-linejoin="round" class="h-6 w-6 text-[#9FEF00]">
+                                    <circle cx="18" cy="8" r="3"></circle>
                                     <path
-                                        d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z">
+                                        d="m19.2 15.7C19.9 15.2 20.6 14.5 21 13.9c.9-1.2.9-2.9.9-2.9s-1.1-.9-2.1-.9c-.7 0-1.3.2-1.8.5">
                                     </path>
-                                    <path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"></path>
-                                    <path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"></path>
-                                </svg></div>
-                            <h3 class="font-semibold tracking-tight text-lg">Tutorials</h3>
+                                    <circle cx="12" cy="8" r="3"></circle>
+                                    <path d="M12 14c-3.3 0-6 2.7-6 6v1h12v-1c0-3.3-2.7-6-6-6Z"></path>
+                                    <circle cx="6" cy="8" r="3"></circle>
+                                    <path
+                                        d="m4.8 15.7C4.1 15.2 3.4 14.5 3 13.9c-.9-1.2-.9-2.9-.9-2.9s1.1-.9 2.1-.9c.7 0 1.3.2 1.8.5">
+                                    </path>
+                                </svg>
+                            </div>
+                            <h3 class="text-lg font-semibold">Interactive Classrooms</h3>
                         </div>
                         <div class="p-6 pt-0">
-                            <p class="text-sm text-gray-400">Learn with step-by-step guides and interactive tutorials
-                                for all skill levels.</p>
+                            <p class="text-sm text-gray-400">
+                                Join live sessions with instructors and ask questions through the built-in chat.
+                            </p>
                         </div>
                     </div>
                 </div>
             </section>
-            <section class="relative overflow-hidden rounded-2xl bg-gray-900/50 p-8">
+
+            <!-- Last Section -->
+            <section class="relative overflow-hidden rounded-2xl bg-gray-900/50 p-8 mb-20" data-aos="fade-up"
+                data-aos-delay="100">
                 <div class="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-[#9FEF00]/5 blur-3xl"></div>
                 <div class="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-[#9FEF00]/5 blur-3xl"></div>
+
                 <div class="relative z-10 grid gap-8 md:grid-cols-2">
                     <div>
                         <h2 class="mb-4 text-2xl font-bold">Ready to start your IoT journey?</h2>
-                        <p class="mb-6 text-gray-400">Our platform provides everything you need to learn IoT
-                            development, from beginner tutorials to advanced projects. Access real hardware remotely and
-                            build your skills with hands-on experience.</p>
+                        <p class="mb-6 text-gray-400">
+                            Our platform provides everything you need to learn IoT development, from beginner tutorials
+                            to advanced
+                            projects. Access real hardware remotely and build your skills with hands-on experience.
+                        </p>
                         <div class="flex flex-wrap gap-4">
-                            <a href="register.html"><button
-                                class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 h-10 px-4 py-2 rounded-xl bg-[#9FEF00] text-[#111927] hover:bg-[#8BDF00]">Get
-                                Started</button></a></div>
+                           <a href="register.html"><button
+                                class="rounded-xl bg-gradient-to-r from-[#9FEF00] to-[#8BDF00] font-semibold px-4 py-2 text-[#111927] shadow-[0_0_15px_rgba(159,239,0,0.3)] transition-all duration-300 hover:shadow-[0_0_25px_rgba(159,239,0,0.5)]">
+                                Get Started
+                            </button></a> 
+
+                        </div>
                     </div>
                     <div class="flex items-center justify-center">
                         <div class="relative h-48 w-48">
                             <div
                                 class="absolute inset-0 flex animate-pulse items-center justify-center rounded-full bg-[#9FEF00]/10">
                             </div>
-                            <div
-                                class="absolute inset-4 flex animate-pulse items-center justify-center rounded-full bg-[#9FEF00]/20 [animation-delay:500ms]">
-                            </div>
-                            <div
-                                class="absolute inset-8 flex animate-pulse items-center justify-center rounded-full bg-[#9FEF00]/30 [animation-delay:1000ms]">
-                            </div>
-                            <div class="absolute inset-0 flex items-center justify-center"><svg
-                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            <div class="absolute inset-4 flex animate-pulse items-center justify-center rounded-full bg-[#9FEF00]/20"
+                                style="animation-delay:500ms"></div>
+                            <div class="absolute inset-8 flex animate-pulse items-center justify-center rounded-full bg-[#9FEF00]/30"
+                                style="animation-delay:1000ms"></div>
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    class="lucide lucide-settings h-16 w-16 animate-spin text-[#9FEF00] [animation-duration:10s]">
+                                    class="h-16 w-16 animate-spin text-[#9FEF00] drop-shadow-[0_0_8px_rgba(159,239,0,0.7)]"
+                                    style="animation-duration:10s">
                                     <path
                                         d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
                                     </path>
                                     <circle cx="12" cy="12" r="3"></circle>
-                                </svg></div>
+                                </svg>
+                            </div>
                         </div>
                     </div>
                 </div>
             </section>
         </main>
 
-
-
-
         <footer class="border-t border-gray-800 bg-[#0D141E] py-12">
             <div class="container mx-auto px-4">
                 <div class="mb-8 flex flex-col items-center justify-between gap-4 md:flex-row">
                     <div class="flex items-center gap-2">
-                        <img src="..\Documents\mic-white.png" alt="IoT Document" width="18">
+                        <img src="./Documents/IoT9ff.svg" alt="IoT Logo" class="h-6 w-6 " />
                         <span class="text-xl font-bold">IoT Lab</span>
                     </div>
-                    <div class="flex gap-4"><button
-                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent h-9 rounded-md px-3 text-gray-400 hover:text-[#9FEF00]">Terms</button><button
-                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent h-9 rounded-md px-3 text-gray-400 hover:text-[#9FEF00]">Privacy</button><button
-                            class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg]:size-4 [&amp;_svg]:shrink-0 hover:bg-accent h-9 rounded-md px-3 text-gray-400 hover:text-[#9FEF00]">Contact</button>
+                    <div class="flex gap-4">
+                        <button class="h-9 rounded-md px-3 text-gray-400 hover:text-[#9FEF00]">Terms</button>
+
+                        <button class="h-9 rounded-md px-3 text-gray-400 hover:text-[#9FEF00]">Contact</button>
                     </div>
                 </div>
                 <div class="text-center text-sm text-gray-500">© 2025 IoT Lab Platform. All rights reserved.</div>
             </div>
         </footer>
     </div>
+    <script>
+        // Create circuit data particles
+        function createCircuitParticles() {
+            const circuitLines = document.querySelectorAll(".circuit-line-h, .circuit-line-v, .circuit-line-d");
+
+            circuitLines.forEach((line) => {
+                const isHorizontal = line.classList.contains("circuit-line-h");
+                const isVertical = line.classList.contains("circuit-line-v");
+
+                // Only create particles after the line has been drawn
+                setTimeout(
+                    () => {
+                        // Create 1-3 particles per line
+                        const particleCount = Math.floor(Math.random() * 3) + 1;
+
+                        for (let i = 0; i < particleCount; i++) {
+                            const particle = document.createElement("div");
+                            particle.classList.add("circuit-data-particle");
+
+                            // Set random delay for each particle
+                            particle.style.animationDelay = `${Math.random() * 5}s`;
+
+                            if (isHorizontal) {
+                                particle.classList.add("horizontal");
+                            } else if (isVertical) {
+                                particle.classList.add("vertical");
+                            } else {
+                                particle.classList.add("diagonal");
+                                // Add the same rotation as the line
+                                if (line.classList.contains("rotate-45")) {
+                                    particle.classList.add("rotate-45");
+                                } else {
+                                    particle.classList.add("rotate-neg-45");
+                                }
+                            }
+
+                            line.appendChild(particle);
+                        }
+                    },
+                    // Delay particle creation until after the line is drawn
+                    1500 + (parseFloat(getComputedStyle(line).animationDelay) * 1000 || 0)
+                );
+            });
+        }
+
+        // Run after page load
+        window.addEventListener('load', function () {
+            setTimeout(createCircuitParticles, 500);
+        });
+    </script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+
+        // 3D Tilt Effect
+        const card = document.getElementById('screenshot');
+
+        if (card) {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                const rotateX = ((y - centerY) / centerY) * 3;
+                const rotateY = ((x - centerX) / centerX) * -3;
+
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(5px)`;
+            });
+
+            // Optional: Uncomment if you want the reset effect
+            // card.addEventListener('mouseleave', () => {
+            //   card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+            // });
+        }
+    </script>
 </body>
 
 </html>

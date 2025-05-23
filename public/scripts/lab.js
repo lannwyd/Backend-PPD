@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (stream_text) stream_text.style.display = "block";
             if (sessionTimeEl) sessionTimeEl.textContent = "00:00";
             if (inputField) inputField.disabled=true;
-             window.location.href = 'localhost:5000/dashboard';
+             window.location.href = '/dashboard';
             flash_btn.style.display = "none";
             
             if (sessionTimerInterval) {

@@ -93,7 +93,7 @@ function setupEventListeners() {
         try {
             const response = await fetch('http://localhost:3000/create-session', {
                 method: 'POST',
-              
+              credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                     

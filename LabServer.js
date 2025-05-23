@@ -23,12 +23,12 @@ const __dirname = path.dirname(__filename);
 async function initializeDatabase() {
   try {
     await sequelize.authenticate();
-    console.log("✅ Database connection established");
+    console.log("Database connection established");
 
     setupAssociations();
 
     await sequelize.sync({ alter: true });
-    console.log("🔄 Database synchronized");
+    console.log("Database synchronized");
 
     const { Role } = sequelize.models;
     await Role.findOrCreate({ where: { role_label: "student" } });

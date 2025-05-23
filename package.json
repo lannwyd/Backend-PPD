@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:server1": "nodemon server.js",
-    "start:server2": "nodemon LabServer.js",
+    "start:server1": "nodemon server.js --host",
+    "start:server2": "nodemon LabServer.js --host",
     "start:server3": "nodemon meet.js",
     "start:both": "concurrently \"npm run start:server1\" \"npm run start:server2\"",
     "start:servers": "concurrently \"npm run start:server1\" \"npm run start:server3\"",

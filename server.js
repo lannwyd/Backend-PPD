@@ -30,14 +30,14 @@ import {protect} from "./src/controllers/authController.js";
 import dotenv from "dotenv";
 dotenv.config();
 
-// Initialize express app
+
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        // Create directory if it doesn't exist
+        
         const dest = path.join(__dirname, 'public', 'uploads', 'profile_pictures');
         fs.mkdirSync(dest, { recursive: true });
         cb(null, dest);
@@ -60,7 +60,6 @@ const upload = multer({
     }
 });
 
-// Security middleware
 
 app.use(cors({
     origin: '*',
@@ -111,41 +110,40 @@ app.use(
 
 
 
-// Logging
+
 app.use(morgan('dev'));
 
-// Body parsing
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Static files
+
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Database connection and role seeding
+
 async function initializeDatabase() {
     try {
         await sequelize.authenticate();
-        console.log('✅ Database connection established');
+        console.log(' Database connection established');
 
         setupAssociations();
 
         
         await sequelize.sync({  alter: false });
-        console.log('🔄 Database synchronized');
+        console.log(' Database synchronized');
 
-        // Seed initial roles if they don't exist
+        
         const { Role } = sequelize.models;
         await Role.findOrCreate({ where: { role_label: 'student' } });
         await Role.findOrCreate({ where: { role_label: 'teacher' } });
-        console.log('🔒 Base roles seeded');
+        console.log(' Base roles seeded');
     } catch (error) {
-        console.error('❌ Database initialization failed:', error);
+        console.error(' Database initialization failed:', error);
         throw error;
     }
 }
 
-// API Routes
+
 app.use('/api/history', historyRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/roles', roleRoutes);
@@ -155,7 +153,7 @@ app.use('/api/members', joinedUsersRoutes);
 
 app.use('/auth', authRoutes);
 
-// HTML Routes
+
 const htmlRoutes = [
     '/', '/login', '/register', '/dashboard',
     '/profile', '/Account-verification',"/LabRoom",
@@ -176,14 +174,14 @@ app.patch('/api/users/upload-profile-picture',
     userController.uploadProfilePicture
 );
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
-// Health check endpoint
+
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'healthy' });
 });
 
 
 
-// Error handling
+
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(err.status || 500).json({
@@ -192,31 +190,30 @@ app.use((err, req, res, next) => {
     });
 });
 
-// 404 handler
+
 app.use((req, res) => {
     res.status(404).json({ error: 'Not found' });
 });
 
-// Create HTTP and WebSocket server
 const httpServer = createServer(app);
 
 
-// Start server
+
 async function startServer() {
     try {
         await initializeDatabase();
 
         const PORT = process.env.PORT || 5000;
         httpServer.listen(PORT, () => {
-            console.log(`🚀 Server running on port ${PORT}`);
-            console.log(`🌐 WebSocket server running on port ${PORT}`);
+            console.log(` Server running on port ${PORT}`);
+            console.log(` WebSocket server running on port ${PORT}`);
         });
     } catch (error) {
-        console.error("❌ Server startup failed:", error);
+        console.error("Server startup failed:", error);
         process.exit(1);
     }
 }
-// Graceful shutdown
+
 process.on('SIGTERM', async () => {
     console.log('SIGTERM received. Shutting down gracefully...');
     await sequelize.close();
