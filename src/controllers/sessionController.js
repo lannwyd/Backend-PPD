@@ -1,8 +1,6 @@
 import Session from "../../models/Session.js";
 
-import { Op } from 'sequelize';
-import JoinedUsers from "../../models/JoinedUsers.js";
-import User from "../../models/User.js";
+
 
 
 const respond = (res, status, data, message = '') => {

@@ -14,8 +14,11 @@ import dotenv from "dotenv";
 import setupAssociations from "./models/associations.js";
 import History from "./models/userHistory.js";
 import jwt from "jsonwebtoken";
+import { fileURLToPath } from "url";
 
 dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function initializeDatabase() {
   try {
@@ -179,6 +182,7 @@ async function flashArduino({ hexbase64, clientId }) {
       if (code === 0) {
         serial.open();
         await fs.rm(hexDir, { recursive: true, force: true });
+        io.to(clients[clientId]).emit("flash-success", "Flash successful.");
       } else {
         io.to(clients[clientId]).emit("flash-fail", "Flash failed.");
         await fs.rm(hexDir, { recursive: true, force: true });
@@ -462,7 +466,7 @@ io.on("connection", (socket) => {
     console.log("Serial port opened.");
   });
   socket.on("serial-command", ({ clientId, command }) => {
-    console.log(`🛜 Sending to Arduino: ${command}`);
+    console.log(`Sending to Arduino: ${command}`);
 
     serial.write(command.trim() + "\n", (err) => {
       if (err) {
@@ -472,7 +476,7 @@ io.on("connection", (socket) => {
     });
   });
   serial.on("data", (data) => {
-    console.log("📨 Arduino says:", data.toString());
+    console.log("Arduino says:", data.toString());
 
     io.emit("serial-data", data.toString());
   });
