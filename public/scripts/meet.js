@@ -23,7 +23,7 @@ let isCamOn = true;
 let isMicOn = true;
 let isScreenSharing = false;
 let isHost = false;
-let userName;
+let userName=prompt("Enter your name");
 const peers = {};
 let clientID=Math.floor(Math.random() * 1000000);
 const roomId = window.location.pathname.split('/').pop();
@@ -35,10 +35,7 @@ peer.on('open', id => {
 
    
     socket.emit('check-session-status', { sessionId: roomId ,clientID:clientID});
-    socket.on('connected',({username})=>{
-        userName = username;
-        console.log('User connected:', userName);
-    })
+ 
 });
 
 
@@ -216,7 +213,7 @@ socket.on('new-message', ({ userName, message, timestamp }) => {
 
 socket.on('host-screen-share-started', ({ peerId, userName }) => {
     console.log(`${userName} started screen sharing.`);
-    // Screen share is now handled through peer calls with metadata
+    
 });
 
 socket.on('host-screen-share-stopped', ({ peerId, userName }) => {

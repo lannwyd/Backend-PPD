@@ -241,7 +241,7 @@ io.on('connection', (socket) => {
       
       io.to(sessionId).emit('users-updated', connectedUsers);
       
-      // Confirm successful join to new user
+    
       socket.emit('join-success', {
         sessionId,
         isHost: user.isHost,
