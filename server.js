@@ -80,6 +80,7 @@ app.use(
           "https://cdnjs.cloudflare.com",
           "https://cdn.socket.io",
            "https://cdn.tailwindcss.com",
+            "https://unpkg.com",
         ],
         styleSrc: [
           "'self'",
@@ -100,6 +101,7 @@ app.use(
           "ws://localhost:4000",
           "http://localhost:3000",
           "https://res.cloudinary.com/" ,
+            "https://lottie.host",
         ],
         workerSrc: ["'self'", "blob:"],
         imgSrc: ["'self'", "data:"],
