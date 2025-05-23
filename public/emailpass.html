@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/styles/Forgotpass.css">
+    <title>IoT Remote Lab - Password Recovery</title>
+</head>
+
+<body>
+    <nav>
+        <div class="navbar">
+            <p id="p1"><img src="/Documents/mic-white.png" alt="IoT Document" width="18">IoT Lab</p>
+        </div>
+    </nav>
+    <main>
+        <div class="Box1">
+            <header>
+                <div class="icon2">
+                    <i class="fa-solid fa-microchip"></i>
+                </div>
+                <div class="part1">
+                    <h2>Password Recovery</h2>
+                </div>
+                <div class="part2">
+                    <p>Enter your email to receive a password reset link</p>
+                </div>
+            </header>
+            <div class="code-container">
+                <form id="recoveryForm" method="POST" action="javascript:void(0);">
+                    <div class="inputs">
+                        <div class="mail-info">
+                            <label for="email"><b>Email</b></label><br>
+                            <input type="email" id="email" name="email" autocomplete="email" placeholder="Enter your email">
+                            <p class="error_message" id="error_message"></p>
+                        </div>
+                    </div>
+                    <button type="submit" id="recoveryButton">Send Recovery Link</button>
+                </form>
+            </div>
+            <div class="last-part">
+                <p id="sign"><a style="color: #9FEF00;" href="/login">Back to sign in</a></p>
+            </div>
+        </div>
+    </main>
+    <script src="/auth/recovery.js"></script>
+</body>
+
+</html>

@@ -72,7 +72,15 @@ const User = sequelize.define("User", {
     },
     verification_token_expires: {
         type: DataTypes.DATE
-    }
+    },
+    passwordResetToken: {
+        type: DataTypes.STRING,
+    },
+    passwordResetExpires: {
+        type: DataTypes.DATE,
+    },
+
+
 }, {
     tableName: "User",
     timestamps: false,

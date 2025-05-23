@@ -48,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Validate password
         if (password === '') {
             errorMessage2.textContent = 'Please enter your password';
             return;
@@ -57,7 +56,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Validate role if exists
         if (role === null || role === '') {
             errorMessage1.textContent = 'Please select your role';
             return;
@@ -67,16 +65,8 @@ document.addEventListener('DOMContentLoaded', function() {
             signInButton.disabled = true;
             signInButton.textContent = 'Signing in...';
 
-            // Remember me functionality
-            // if (document.getElementById('agree').checked) {
-            //     localStorage.setItem('email', email);
-            //     localStorage.setItem('password', password);
-            // } else {
-            //     localStorage.removeItem('email');
-            //     localStorage.removeItem('password');
-            // }
 
-            // API call
+
             const response = await fetch('/auth/login', {
                 method: 'POST',
                 headers: {
@@ -103,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(data.error || 'Login failed');
             }
 
-            // Store token and redirect
             localStorage.setItem('token', data.token);
           
             localStorage.setItem('userRole', data.data.role);

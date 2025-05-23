@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', async function() {
-    // Load user profile
     await loadUserProfile();
 
-    // Setup event listeners
     setupEventListeners();
 });
 
@@ -25,30 +23,25 @@ async function loadUserProfile() {
 
         const { user } = data.data;
 
-        // Update the DOM elements
         document.getElementById('firstName').value = user.first_name || '';
         document.getElementById('lastName').value = user.last_name || '';
         document.getElementById('email').value = user.email || '';
         document.getElementById('phone').value = user.phone || '';
 
-        // Update profile picture or initials
         const profilePic = document.getElementById('profilePic');
         const profileInitials = document.getElementById('profileInitials');
 
         if (user.profile_picture) {
-            // If profile picture exists, show it
             profilePic.textContent = '';
             profilePic.style.backgroundImage = `url(${user.profile_picture})`;
             profilePic.style.backgroundSize = 'cover';
             profilePic.style.backgroundPosition = 'center';
         } else {
-            // Otherwise show initials
             const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
             profilePic.textContent = initials;
             profilePic.style.backgroundImage = '';
         }
 
-        // Always update initials (for the dropdown)
         const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
         profileInitials.textContent = initials;
         document.getElementById('profileName').textContent = `${user.first_name} ${user.last_name}`;
@@ -85,9 +78,9 @@ function setupEventListeners() {
                 alert('Please enter a valid phone number (e.g., +1234567890)');
                 return;
             }
-            const userId = window.userId; // Should match req.user.user_id
+            const userId = window.userId;
 
-            const response = await fetch(`/api/users/${userId}`, {  // Add this line at top of file
+            const response = await fetch(`/api/users/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -104,7 +97,6 @@ function setupEventListeners() {
             const updatedData = await response.json();
             alert('Profile updated successfully!');
 
-            // Update original data
             window.originalData = {
                 ...window.originalData,
                 first_name: updatedData.data.first_name,
@@ -112,7 +104,6 @@ function setupEventListeners() {
                 phone: updatedData.data.phone
             };
 
-            // Update profile display
             document.getElementById('profileName').textContent =
                 `${updatedData.data.first_name} ${updatedData.data.last_name}`;
             const initials = `${updatedData.data.first_name.charAt(0)}${updatedData.data.last_name.charAt(0)}`.toUpperCase();
@@ -122,7 +113,6 @@ function setupEventListeners() {
             console.error('Update error:', error);
             alert(error.message || 'Failed to update profile');
 
-            // Reset form to original values
             document.getElementById('firstName').value = window.originalData.first_name;
             document.getElementById('lastName').value = window.originalData.last_name;
             document.getElementById('phone').value = window.originalData.phone;
@@ -133,47 +123,56 @@ function setupEventListeners() {
         }
     });
 
-    // Cancel button
     document.getElementById('cancelBtn').addEventListener('click', function() {
         document.getElementById('firstName').value = window.originalData.first_name;
         document.getElementById('lastName').value = window.originalData.last_name;
         document.getElementById('phone').value = window.originalData.phone;
     });
 
-    // Change password button
-    document.getElementById('changePasswordBtn').addEventListener('click', async function() {
-        const newPassword = prompt("Enter your new password:");
-        if (!newPassword) return;
+    document.getElementById('changePasswordBtn').addEventListener('click', function () {
+        const section = document.getElementById('changePasswordSection');
+        section.classList.toggle('hidden');
+    });
 
-        const currentPassword = prompt("Enter your current password:");
-        if (!currentPassword) return;
+    document.getElementById('submitPasswordChange').addEventListener('click', async function () {
+        const currentPassword = document.getElementById('currentPassword').value.trim();
+        const newPassword = document.getElementById('newPassword').value.trim();
+        const message = document.getElementById('passwordChangeMessage');
+
+        message.textContent = '';
+
+        if (!currentPassword || !newPassword) {
+            message.textContent = 'Both fields are required.';
+            return;
+        }
+
+        if (newPassword.length < 8) {
+            message.textContent = 'Password must be at least 8 characters.';
+            return;
+        }
 
         try {
             const response = await fetch('/auth/update-password', {
                 method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify({
-                    currentPassword,
-                    newPassword
-                })
+                body: JSON.stringify({ currentPassword, newPassword })
             });
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Failed to change password');
-            }
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || 'Failed to update password');
 
-            alert('Password changed successfully!');
+            message.style.color = 'green';
+            message.textContent = 'Password updated successfully!';
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('newPassword').value = '';
         } catch (error) {
-            console.error('Password change error:', error);
-            alert(error.message || 'Failed to change password');
+            message.style.color = 'red';
+            message.textContent = error.message;
         }
     });
 
-    // Profile picture upload
+
     document.getElementById('editPicBtn').addEventListener('click', function() {
         document.getElementById('profilePicInput').click();
     });
@@ -182,19 +181,16 @@ function setupEventListeners() {
         const file = e.target.files[0];
         if (!file) return;
 
-        // Validate file size (5MB max)
         if (file.size > 5 * 1024 * 1024) {
             alert('File size must be less than 5MB');
             return;
         }
 
-        // Validate file type
         if (!file.type.startsWith('image/')) {
             alert('Please upload an image file (JPEG, PNG)');
             return;
         }
 
-        // Preview image
         const reader = new FileReader();
         reader.onload = function(event) {
             const profilePic = document.getElementById('profilePic');
@@ -205,7 +201,6 @@ function setupEventListeners() {
         };
         reader.readAsDataURL(file);
 
-        // Upload to server
         try {
             const formData = new FormData();
             formData.append('profilePicture', file);
@@ -226,14 +221,12 @@ function setupEventListeners() {
             console.error('Upload error:', error);
             alert(error.message || 'Failed to upload profile picture');
 
-            // Reset to initials if upload fails
             const profilePic = document.getElementById('profilePic');
             profilePic.style.backgroundImage = '';
             profilePic.textContent = document.getElementById('profileInitials').textContent;
         }
     });
 
-    // Toggle buttons
     document.getElementById('emailToggle').addEventListener('click', function() {
         const circle = document.getElementById('emailToggleCircle');
         if (circle.classList.contains('translate-x-6')) {
@@ -264,7 +257,6 @@ function setupEventListeners() {
         }
     });
 
-    // Logout
     document.getElementById('logoutLink').addEventListener('click', async function(e) {
         e.preventDefault();
 

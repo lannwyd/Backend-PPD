@@ -6,6 +6,7 @@ import {sendEmail} from '../utils/email.js';
 import User from "../../models/User.js";
 import Role from "../../models/Role.js"; // Add this import
 import dotenv from 'dotenv';
+import { Op } from 'sequelize';
 
 dotenv.config();
 
@@ -364,14 +365,18 @@ export const restrictTo = (...roles) => {
 };
 
 
-// Forgot password
 export const forgotPassword = async (req, res, next) => {
+
     try {
-        const { email } = req.body;
+         const { email } = req.body;
 
         const user = await User.findOne({ where: { email } });
         if (!user) {
-            return res.status(404).json({ error: 'There is no user with that email address' });
+            // Don't reveal if user doesn't exist for security
+            return res.status(200).json({
+                status: 'success',
+                message: 'If an account exists with this email, a reset link has been sent'
+            });
         }
 
         // Generate reset token
@@ -380,27 +385,33 @@ export const forgotPassword = async (req, res, next) => {
         user.passwordResetExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
         await user.save();
 
-        // Send email with reset token
-        const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/reset-password/${resetToken}`;
-        const message = `Forgot your password? Submit a PATCH request with your new password to: ${resetUrl}`;
+        // Create reset URL that points to your frontend
+        const resetUrl = `${process.env.FRONTEND_URL || req.headers.origin}/forgotpassword?token=${resetToken}`;
+
+        const message = `You requested a password reset. Click this link to reset your password:\n\n
+        <a href="${resetUrl}">Reset Password</a>\n\n
+        . If you didn't request this, please ignore this email.`;
 
         try {
             await sendEmail({
                 email: user.email,
-                subject: 'Your password reset token (valid for 10 minutes)',
+                subject: 'Your password reset link',
                 message
             });
 
             res.status(200).json({
                 status: 'success',
-                message: 'Token sent to email'
+                message: 'Password reset link sent to email'
             });
         } catch (err) {
-            user.passwordResetToken = undefined;
-            user.passwordResetExpires = undefined;
+            // Reset token if email fails
+            user.passwordResetToken = null;
+            user.passwordResetExpires = null;
             await user.save();
 
-            return res.status(500).json({ error: 'There was an error sending the email' });
+            return res.status(500).json({
+                error: 'There was an error sending the email. Please try again later.'
+            });
         }
     } catch (error) {
         res.status(500).json({
@@ -413,7 +424,13 @@ export const forgotPassword = async (req, res, next) => {
 // Reset password
 export const resetPassword = async (req, res, next) => {
     try {
+        if (!req.params.token || !/^[a-f0-9]{64}$/.test(req.params.token)) {
+            return res.status(400).json({ error: 'Invalid reset token format' });
+        }
+
         const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+
         const { password } = req.body;
 
         const user = await User.findOne({
@@ -422,6 +439,7 @@ export const resetPassword = async (req, res, next) => {
                 passwordResetExpires: { [Op.gt]: Date.now() }
             }
         });
+
 
         if (!user) {
             return res.status(400).json({ error: 'Token is invalid or has expired' });
@@ -459,11 +477,13 @@ export const resetPassword = async (req, res, next) => {
             }
         });
     } catch (error) {
-        res.status(500).json({
-            error: 'Password reset failed',
-            details: error.message
-        });
-    }
+    console.error("Reset password error:", error);
+    res.status(500).json({
+        error: 'Password reset failed',
+        details: error.message
+    });
+}
+
 };
 
 // Update password (for logged-in users)
