@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     loadUserProfile();
     setupEventListeners();
 });
-
+let user;
 async function loadUserProfile() {
     try {
         const response = await fetch('/auth/profile', {
@@ -27,7 +27,7 @@ async function loadUserProfile() {
         }
 
         const { data } = await response.json();
-        const user = data.user;
+         user = data.user;
         const role = data.role;
 
         if (welcomeMessage) {
@@ -78,7 +78,8 @@ function setupEventListeners() {
             }
              dataform = {
             sessionName: Session_Name.value,
-            description: Description.value
+            description: Description.value,
+            userName: user.first_name + " " + user.last_name,
         };
        
         createSession();
@@ -92,11 +93,12 @@ function setupEventListeners() {
         try {
             const response = await fetch('http://localhost:3000/create-session', {
                 method: 'POST',
+              
                 headers: {
                     'Content-Type': 'application/json',
                     
                 },
-                credentials: 'include',
+               
                 body: JSON.stringify(dataform)
             });
 

@@ -37,7 +37,7 @@ async function initializeDatabase() {
   }
 }
 
-// Configure Socket.IO with proper CORS
+
 const io = new Server(server, {
   cors: {
     origin: "*",
@@ -48,7 +48,8 @@ const io = new Server(server, {
 
 
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:4000'],
+  origin: ['http://localhost:5000', 'http://localhost:4000'],
+   credentials: true    
 }));
 
 
@@ -71,7 +72,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'meeting.html'));
 });
 
-app.post('/create-session' ,protect,async (req, res) => {
+
+app.post('/create-session' ,async (req, res) => {
   try {
     console.log('Create session request:', req.body);
     const { sessionName, description } = req.body;
@@ -108,7 +110,7 @@ app.post('/create-session' ,protect,async (req, res) => {
   }
 });
 
-app.get('/:sessionId' ,protect,(req, res) => {
+app.get('/:sessionId' ,(req, res) => {
   const { sessionId } = req.params;
   if (sessions.has(sessionId)) {
     res.sendFile(path.join(__dirname, 'public', 'meeting.html'));
@@ -153,50 +155,50 @@ io.on('connection', (socket) => {
 
       const session = sessions.get(sessionId);
       
-      // Create user object
+     
       const user = {
         id: socket.id,
         name: userName,
-        isHost: false, // Will be set properly below
+        isHost: false, 
         sessionId: sessionId,
         peerId: peerId,
         joinedAt: new Date()
       };
 
-      // Join the session room
+
       socket.join(sessionId);
       users.set(socket.id, user);
 
-      // Determine if user should be host
+    
       const shouldBeHost = !session.host && session.participants.length === 0;
       
       if (shouldBeHost) {
-        // First user becomes host
+   
         user.isHost = true;
         session.host = user;
         socket.emit('host-privileges', true);
         console.log(`${userName} assigned as host for session ${sessionId}`);
       } else if (isHost && session.host) {
-        // User requested to be host but host already exists
+      
         user.isHost = false;
         session.participants.push(user);
         socket.emit('viewer-mode', true);
         console.log(`${userName} joined as participant (host already exists) in session ${sessionId}`);
       } else {
-        // Regular participant
+
         user.isHost = false;
         session.participants.push(user);
         socket.emit('viewer-mode', true);
         console.log(`${userName} joined as participant in session ${sessionId}`);
       }
 
-      // Update session
+
       sessions.set(sessionId, session);
 
-      // Get all connected users (including the new user)
+   
       const connectedUsers = [session.host, ...session.participants].filter(u => u);
       
-      // Send existing peers to new user (excluding themselves)
+
       const existingPeers = connectedUsers
         .filter(u => u.id !== socket.id)
         .map(u => ({ 

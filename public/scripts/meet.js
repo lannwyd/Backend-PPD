@@ -27,21 +27,21 @@ const peers = {};
 const userName = prompt('Enter your name:') || 'Anonymous';
 const roomId = window.location.pathname.split('/').pop();
 
-// Initialize peer connection
+
 peer.on('open', id => {
     console.log('Peer connected with ID:', id);
     
-    // Check if user should be host by checking URL parameters or session state
-    // First user in a new session becomes host
+
+   
     socket.emit('check-session-status', { sessionId: roomId });
 });
 
-// Check session status response
+
 socket.on('session-status', (data) => {
     isHost = data.shouldBeHost;
     console.log('Session status received. Should be host:', isHost);
     
-    // Join session with proper host status
+   
     socket.emit('join-session', {
         sessionId: roomId,
         userName: userName,
@@ -50,7 +50,7 @@ socket.on('session-status', (data) => {
     });
 });
 
-// Get user media first
+
 navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     .then(stream => {
         localStream = stream;
@@ -61,7 +61,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true })
         console.error('Error accessing media devices:', err);
     });
 
-// Handle incoming calls
+
 peer.on('call', call => {
     if (isAlreadyConnected(call.peer)) {
         console.log(`Skipping duplicate incoming call from ${call.peer}`);
@@ -69,9 +69,8 @@ peer.on('call', call => {
         return;
     }
 
-    // Check if this is a screen share call
     if (call.metadata && call.metadata.type === 'screen-share') {
-        // Handle screen share call
+       
         const screenVideo = document.createElement('video');
         screenVideo.autoplay = true;
         screenVideo.playsInline = true;
@@ -89,12 +88,10 @@ peer.on('call', call => {
             screenShareVideo.style.display = 'none';
         });
 
-        // Answer the screen share call (we don't send our stream back for screen share)
         call.answer();
         return;
     }
 
-    // Normal video call
     call.answer(localStream);
     const video = document.createElement('video');
     video.autoplay = true;
@@ -121,7 +118,7 @@ socket.on('join-success', (data) => {
     console.log('Successfully joined session:', data);
     isHost = data.isHost;
     
-    // Update UI based on host status
+
     updateHostUI();
     
     addUserCard(userName, peer.id, isHost);
@@ -149,7 +146,7 @@ socket.on('viewer-mode', (isViewer) => {
 });
 
 function updateHostUI() {
-    // Update screen share button visibility based on host status
+
     if (screenShareBtn) {
         screenShareBtn.style.display = isHost ? 'block' : 'none';
     }
@@ -234,14 +231,14 @@ socket.on('error', (error) => {
     alert('Error: ' + error);
 });
 
-// Helper functions
+
 function connectToPeer(peerId, peerName) {
     if (isAlreadyConnected(peerId)) {
         console.log(`Already connected to ${peerId}`);
         return;
     }
 
-    // Only connect to peers with higher ID to avoid race conditions
+    
     if (peerId < peer.id) {
         console.log(`Skipping call to lower ID peer: ${peerId}`);
         return;
@@ -281,7 +278,7 @@ function addUserCard(userName, userId, isUserHost = false) {
     
     userCard.innerHTML = `
         <span class="user-name">${displayName}</span>
-        <img src="/images/user.png" alt="User">
+        <img src="../Documents/user.svg" alt="User">
         ${hostIndicator}
     `;
     
@@ -310,12 +307,11 @@ function updateUsersList(users) {
     
     console.log(`Updated user list with ${users.length} users`);
 }
-
 function addMessage(userName, message, timestamp) {
     const messageDiv = document.createElement('div');
     messageDiv.className = 'message';
     messageDiv.innerHTML = `
-        <img src="/images/user.png" alt="User">
+        <img src="../Documents/user.svg" alt="User">
         <div class="message-content">
             <span>${userName}</span>
             <p>${message}</p>
@@ -351,7 +347,7 @@ chatInput.addEventListener('keypress', e => {
 });
 
 endCallBtn.addEventListener('click', () => {
-    // Clean up connections
+  
     Object.values(peers).forEach(({ call }) => {
         call.close();
     });
@@ -396,10 +392,9 @@ screenShareBtn.addEventListener('click', () => {
                 isScreenSharing = true;
                 screenShareBtn.textContent = 'Stop Sharing';
                 
-                // Notify server about screen share start
+                
                 socket.emit('start-screen-share', { sessionId: roomId });
                 
-                // Create screen share calls to all peers
                 Object.keys(peers).forEach(peerId => {
                     const screenCall = peer.call(peerId, stream, {
                         metadata: { type: 'screen-share' }
@@ -410,7 +405,7 @@ screenShareBtn.addEventListener('click', () => {
                     });
                 });
                 
-                // Handle when user stops sharing (via browser UI)
+               
                 stream.getVideoTracks()[0].onended = stopScreenSharing;
             })
             .catch(err => {
