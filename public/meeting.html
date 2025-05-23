@@ -1,70 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js" ></script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.4.7/peerjs.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>IoT Lab Meeting</title>
-    <link rel="stylesheet" href="/styles/meeting.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/styles/meeting.css" />
+  </head>
+  <body>
     <div class="container">
-        <div class="navbar">
-            <img src="Documents/Home.svg" alt="Logo">
-            <span>IoT Lab</span>
+      <div class="navbar">
+        <img src="Documents/Home.svg" alt="Logo" />
+        <span>IoT Lab</span>
+      </div>
+
+      <div class="main">
+        <div class="stream">
+          <div class="video-section">
+            <div id="screenShareVideo"></div>
+
+            <div class="video-area host-view" id="videoGrid">
+              <div class="video-container host" id="hostContainer">
+                <video id="localVideo" autoplay playsinline muted></video>
+              </div>
+            </div>
+            <div class="video-footer">
+              <div class="user-info">
+                <span class="teacher-name"></span>
+                <span>Practical Session</span>
+              </div>
+              <div class="actions">
+                <div class="end-call">End Call</div>
+                <div class="cam">Cam</div>
+                <div class="mic">Mic</div>
+                <div class="screen-share">Screen Share</div>
+              </div>
+            </div>
+          </div>
+          <div class="live-status">
+            <span class="dot"></span>
+            <span>Live</span>
+          </div>
         </div>
 
-        <div class="main">
-            <div class="stream">
-                <div class="video-section">
-                    <div class="video-area host-view" id="videoGrid">
-                        <div class="video-container host" id="hostContainer">
-                            <video id="localVideo" autoplay playsinline muted></video>
-                        </div>
-                    </div>
-                    <div class="video-footer">
-                        <div class="user-info">
-                            
-                            <span class="teacher-name"></span>
-                            <span>Practical Session</span>
-                        </div>
-                        <div class="actions">
-                            <div class="end-call">End Call</div>
-                            <div class="cam">Cam</div>
-                            <div class="mic">Mic</div>
-                            <div class="screen-share">Screen Share</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="live-status">
-                    <span class="dot"></span>
-                    <span>Live</span>
-                    
-                </div>
-            </div>
+        <div class="sidebar">
+          <div class="connected-users">
+            <h4>Connected Users</h4>
+            <div class="connected-users-cards" id="connectedUsers"></div>
+          </div>
 
-            <div class="sidebar">
-                <div class="connected-users">
-                    <h4>Connected Users</h4>
-                    <div class="connected-users-cards" id="connectedUsers"></div>
-                </div>
-
-                <div class="chat-box">
-                    <div class="chat-header">
-                        <h4>Live Chat</h4>
-                        <span class="badge" id="onlineCount">0 online</span>
-                    </div>
-                    <div class="messages" id="messages"></div>
-                    <div class="input-box">
-                        <input type="text" id="chatInput" placeholder="Type a message...">
-                        <img src="./Documents/send.svg" alt="Send" id="sendMessage">
-                    </div>
-                </div>
+          <div class="chat-box">
+            <div class="chat-header">
+              <h4>Live Chat</h4>
+              <span class="badge" id="onlineCount">0 online</span>
             </div>
+            <div class="messages" id="messages"></div>
+            <div class="input-box">
+              <input
+                type="text"
+                id="chatInput"
+                placeholder="Type a message..."
+              />
+              <img src="./Documents/send.svg" alt="Send" id="sendMessage" />
+            </div>
+          </div>
         </div>
+      </div>
     </div>
     <script src="scripts/meet.js"></script>
-</body>
+  </body>
 </html>

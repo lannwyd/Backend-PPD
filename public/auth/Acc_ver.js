@@ -12,6 +12,49 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('role').value = role;
     document.getElementById('userEmail').textContent = email;
 
+    // Initialize input handling
+    const inputs = document.querySelectorAll('#codeInputs input');
+    
+    inputs.forEach((input, index) => {
+        // Handle numeric input and auto-focus
+        input.addEventListener('input', (e) => {
+            // Only allow numbers
+            input.value = input.value.replace(/[^0-9]/g, '');
+            
+            if (input.value.length === 1) {
+                if (index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+            }
+        });
+
+        // Handle backspace to move to previous field
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && input.value.length === 0) {
+                if (index > 0) {
+                    inputs[index - 1].focus();
+                }
+            }
+        });
+
+        // Handle paste event for automatic code distribution
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const pasteData = e.clipboardData.getData('text/plain').replace(/[^0-9]/g, '');
+            
+            if (pasteData.length === inputs.length) {
+                // Distribute each character to corresponding input
+                pasteData.split('').forEach((char, charIndex) => {
+                    if (inputs[charIndex]) {
+                        inputs[charIndex].value = char;
+                    }
+                });
+                // Focus the last input
+                inputs[inputs.length - 1].focus();
+            }
+        });
+    });
+
     startResendTimer();
 
     document.getElementById('verificationForm').addEventListener('submit', async function(e) {
@@ -21,10 +64,18 @@ document.addEventListener('DOMContentLoaded', function() {
         verifyBtn.disabled = true;
         verifyBtn.textContent = 'Verifying...';
 
-        const codeInputs = document.querySelectorAll('#codeInputs input');
-        const verificationCode = Array.from(codeInputs)
+        const verificationCode = Array.from(inputs)
             .map(input => input.value.trim())
             .join('');
+
+        // Validate all fields are filled
+        if (verificationCode.length !== inputs.length) {
+            document.getElementById('errorMessage').textContent = 'Please fill in all verification code fields';
+            document.getElementById('errorMessage').style.display = 'block';
+            verifyBtn.disabled = false;
+            verifyBtn.textContent = 'Verify Email';
+            return;
+        }
 
         try {
             const response = await fetch('/auth/verify-email', {
@@ -46,8 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
             } else {
                 document.getElementById('errorMessage').textContent = data.error || 'Verification failed';
                 document.getElementById('errorMessage').style.display = 'block';
-                codeInputs.forEach(input => input.value = '');
-                codeInputs[0].focus();
+                inputs.forEach(input => input.value = '');
+                inputs[0].focus();
             }
         } catch (error) {
             console.error('Verification error:', error);
@@ -59,19 +110,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-
-function moveToNext(input) {
-    // Only allow numbers
-    input.value = input.value.replace(/[^0-9]/g, '');
-
-    if (input.value.length === 1) {
-        const next = input.nextElementSibling;
-        if (next && next.tagName === 'INPUT') {
-            next.focus();
-        }
-    }
-}
 
 // Resend timer functionality
 function startResendTimer() {
