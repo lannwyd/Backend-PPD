@@ -80,7 +80,6 @@ app.use(
           "https://cdnjs.cloudflare.com",
           "https://cdn.socket.io",
            "https://cdn.tailwindcss.com",
-            "https://unpkg.com",
         ],
         styleSrc: [
           "'self'",
@@ -100,8 +99,7 @@ app.use(
           "http://localhost:4000",
           "ws://localhost:4000",
           "http://localhost:3000",
-          "https://res.cloudinary.com/",
-            "https://lottie.host", 
+          "https://res.cloudinary.com/" ,
         ],
         workerSrc: ["'self'", "blob:"],
         imgSrc: ["'self'", "data:"],
@@ -128,21 +126,21 @@ app.use(express.static(path.join(__dirname, 'public')));
 async function initializeDatabase() {
     try {
         await sequelize.authenticate();
-        console.log(' Database connection established');
+        console.log('✅ Database connection established');
 
         setupAssociations();
 
         
         await sequelize.sync({  alter: false });
-        console.log(' Database synchronized');
+        console.log('🔄 Database synchronized');
 
         // Seed initial roles if they don't exist
         const { Role } = sequelize.models;
         await Role.findOrCreate({ where: { role_label: 'student' } });
         await Role.findOrCreate({ where: { role_label: 'teacher' } });
-        console.log(' Base roles seeded');
+        console.log('🔒 Base roles seeded');
     } catch (error) {
-        console.error(' Database initialization failed:', error);
+        console.error('❌ Database initialization failed:', error);
         throw error;
     }
 }
@@ -154,12 +152,6 @@ app.use('/api/roles', roleRoutes);
 
 app.use('/api/sessions', sessionRoutes);
 app.use('/api/members', joinedUsersRoutes);
-app.get('/auth/forgot-password', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'emailpass.html'));
-});
-app.get('/forgotpassword', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'forgot_password.html'));
-});
 
 app.use('/auth', authRoutes);
 
@@ -167,7 +159,8 @@ app.use('/auth', authRoutes);
 const htmlRoutes = [
     '/', '/login', '/register', '/dashboard',
     '/profile', '/Account-verification',"/LabRoom",
-    '/history', '/history/teacher'];
+    '/history', '/history/teacher'
+];
 
 htmlRoutes.forEach(route => {
     app.get(route, (req, res) => {
@@ -199,8 +192,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-
-
 // 404 handler
 app.use((req, res) => {
     res.status(404).json({ error: 'Not found' });
@@ -217,11 +208,11 @@ async function startServer() {
 
         const PORT = process.env.PORT || 5000;
         httpServer.listen(PORT, () => {
-            console.log(` Server running on port ${PORT}`);
-            console.log(` WebSocket server running on port ${PORT}`);
+            console.log(`🚀 Server running on port ${PORT}`);
+            console.log(`🌐 WebSocket server running on port ${PORT}`);
         });
     } catch (error) {
-        console.error(" Server startup failed:", error);
+        console.error("❌ Server startup failed:", error);
         process.exit(1);
     }
 }

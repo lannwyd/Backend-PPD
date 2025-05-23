@@ -10,6 +10,8 @@ const profileLink = document.getElementById("profileLink");
 const logoutLink = document.getElementById("logoutLink");
 const profileInitials = document.getElementById("profileInitials");
 const welcomeMessage = document.getElementById("welcom_back");
+const userName = document.getElementById("userName");
+const userPicture = document.getElementById("profile-icon");
 
 document.addEventListener('DOMContentLoaded', function() {
     loadUserProfile();
@@ -29,6 +31,7 @@ async function loadUserProfile() {
         const { data } = await response.json();
          user = data.user;
         const role = data.role;
+      
 
         if (welcomeMessage) {
             welcomeMessage.textContent = `Welcome back, ${user.first_name}!`;
@@ -37,6 +40,12 @@ async function loadUserProfile() {
         if (profileInitials) {
             const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
             profileInitials.textContent = initials;
+        }
+        if (userName) {
+            userName.textContent = `${user.first_name} ${user.last_name}`;
+        }
+        if (userPicture) {
+            userPicture.src = user.profile_picture || '/images/default-profile.png';
         }
 
         localStorage.setItem('userRole', role);
@@ -93,7 +102,7 @@ function setupEventListeners() {
         try {
             const response = await fetch('http://localhost:3000/create-session', {
                 method: 'POST',
-              
+              credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',
                     

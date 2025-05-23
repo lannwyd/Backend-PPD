@@ -1,0 +1,455 @@
+ /* Circuit board animations */
+ @keyframes drawLineHorizontal {
+     0% {
+         width: 0;
+         opacity: 0;
+     }
+
+     100% {
+         width: 100%;
+         opacity: 0.6;
+     }
+ }
+
+ @keyframes drawLineVertical {
+     0% {
+         height: 0;
+         opacity: 0;
+     }
+
+     100% {
+         height: 100%;
+         opacity: 0.6;
+     }
+ }
+
+ @keyframes pulseNode {
+     0% {
+         opacity: 0;
+         transform: scale(0);
+     }
+
+     50% {
+         opacity: 0.8;
+         transform: scale(1);
+     }
+
+     70% {
+         opacity: 0.6;
+         transform: scale(0.8);
+     }
+
+     85% {
+         opacity: 0.7;
+         transform: scale(0.9);
+     }
+
+     100% {
+         opacity: 0.5;
+         transform: scale(0.8);
+     }
+ }
+
+ .circuit-line-h {
+     animation: drawLineHorizontal 1.5s forwards ease-in-out;
+     transform-origin: left;
+ }
+
+ .circuit-line-v {
+     animation: drawLineVertical 1.5s forwards ease-in-out;
+     transform-origin: top;
+ }
+
+ .circuit-node {
+     animation: pulseNode 3s infinite ease-in-out;
+     transform-origin: center;
+ }
+
+ /* Code Editor Animations */
+ .code-editor {
+     box-shadow: 0 0 20px rgba(159, 239, 0, 0.1);
+ }
+
+ .code-line {
+     font-family: monospace;
+     font-size: 12px;
+     line-height: 1.5;
+     white-space: pre;
+     margin-bottom: 2px;
+ }
+
+ .typing-effect {
+     overflow: hidden;
+     white-space: nowrap;
+     opacity: 0;
+     animation: typingEffect 1s forwards;
+ }
+
+ @keyframes typingEffect {
+     0% {
+         opacity: 0;
+         width: 0;
+     }
+
+     10% {
+         opacity: 1;
+     }
+
+     100% {
+         opacity: 1;
+         width: 100%;
+     }
+ }
+
+ /* Terminal Window Animations */
+ .terminal-window {
+     animation: expandTerminal 0.5s forwards;
+     animation-delay: 2s;
+ }
+
+ @keyframes expandTerminal {
+     0% {
+         height: 8px;
+     }
+
+     100% {
+         height: 80px;
+     }
+ }
+
+ @keyframes showMessage {
+     0% {
+         opacity: 0;
+     }
+
+     20% {
+         opacity: 1;
+     }
+
+     80% {
+         opacity: 1;
+     }
+
+     100% {
+         opacity: 0;
+     }
+ }
+
+ /* Arduino Board Animations */
+ .arduino-board {
+     box-shadow: 0 0 20px rgba(159, 239, 0, 0.1);
+ }
+
+ .led-pin13 {
+     animation: ledBlink 2s infinite;
+     animation-delay: 10s;
+ }
+
+ .mega-led,
+ .nano-led {
+     animation: ledBlink 2s infinite;
+     animation-delay: 1s;
+ }
+
+ @keyframes ledBlink {
+
+     0%,
+     49% {
+         background-color: transparent;
+         box-shadow: none;
+     }
+
+     50%,
+     100% {
+         background-color: rgba(159, 239, 0, 0.8);
+         box-shadow: 0 0 10px rgba(159, 239, 0, 0.8), 0 0 20px rgba(159, 239, 0, 0.4);
+     }
+ }
+
+ .chip-glow {
+     animation: chipActivate 2s forwards;
+     animation-delay: 9.5s;
+ }
+
+ .mega-chip-glow,
+ .nano-chip-glow {
+     animation: chipActivate 2s forwards;
+     animation-delay: 1.5s;
+ }
+
+ .esp-chip-glow {
+     animation: chipActivate 2s forwards;
+     animation-delay: 2s;
+ }
+
+ .pico-chip-glow {
+     animation: chipActivate 2s forwards;
+     animation-delay: 2.5s;
+ }
+
+ @keyframes chipActivate {
+     0% {
+         background-color: rgba(159, 239, 0, 0);
+         box-shadow: 0 0 0 rgba(159, 239, 0, 0);
+     }
+
+     50% {
+         background-color: rgba(159, 239, 0, 0.1);
+         box-shadow: 0 0 10px rgba(159, 239, 0, 0.3) inset;
+     }
+
+     100% {
+         background-color: rgba(159, 239, 0, 0.05);
+         box-shadow: 0 0 5px rgba(159, 239, 0, 0.2) inset;
+     }
+ }
+
+ @keyframes drawDiagonal {
+     0% {
+         height: 0;
+         opacity: 0;
+     }
+
+     100% {
+         height: 150px;
+         opacity: 1;
+     }
+ }
+
+ @keyframes pulseSpecialNode {
+     0% {
+         opacity: 0;
+         transform: scale(0);
+         box-shadow: 0 0 0 0 rgba(159, 239, 0, 0.7);
+     }
+
+     50% {
+         opacity: 1;
+         transform: scale(1.3);
+         box-shadow: 0 0 0 10px rgba(159, 239, 0, 0);
+     }
+
+     70% {
+         opacity: 1;
+         transform: scale(1);
+         box-shadow: 0 0 0 0 rgba(159, 239, 0, 0);
+     }
+
+     85% {
+         opacity: 1;
+         transform: scale(1.2);
+         box-shadow: 0 0 0 5px rgba(159, 239, 0, 0.3);
+     }
+
+     100% {
+         opacity: 0.8;
+         transform: scale(1);
+         box-shadow: 0 0 0 0 rgba(159, 239, 0, 0);
+     }
+ }
+
+ .circuit-line-d {
+     animation: drawDiagonal 1.8s forwards ease-in-out;
+ }
+
+ .circuit-node-special {
+     animation: pulseSpecialNode 3s infinite ease-in-out;
+ }
+
+ /* Particle animation */
+ .particle {
+     animation: floatParticle 15s infinite linear;
+ }
+
+ @keyframes floatParticle {
+     0% {
+         transform: translate(0, 0);
+         opacity: 0;
+     }
+
+     10% {
+         opacity: 1;
+     }
+
+     90% {
+         opacity: 1;
+     }
+
+     100% {
+         transform: translate(100px, -100px) rotate(360deg);
+         opacity: 0;
+     }
+ }
+
+ /* Text shadow effects */
+ .text-shadow-glow {
+     text-shadow: 0 0 5px rgba(159, 239, 0, 0.7);
+ }
+
+ /* Enhanced circuit animations */
+ .circuit-data-particle {
+     position: absolute;
+     width: 4px;
+     height: 4px;
+     background-color: rgba(159, 239, 0, 0.8);
+     border-radius: 50%;
+     box-shadow: 0 0 5px rgba(159, 239, 0, 0.5);
+     opacity: 0;
+ }
+
+ .circuit-data-particle.horizontal {
+     top: 0;
+     animation: flowHorizontal 3s infinite linear;
+ }
+
+ .circuit-data-particle.vertical {
+     left: 0;
+     animation: flowVertical 3s infinite linear;
+ }
+
+ .circuit-data-particle.diagonal {
+     top: 0;
+     left: 0;
+     animation: flowDiagonal 3s infinite linear;
+ }
+
+ .circuit-data-particle.rotate-45 {
+     transform-origin: top left;
+     transform: rotate(45deg);
+ }
+
+ .circuit-data-particle.rotate-neg-45 {
+     transform-origin: top left;
+     transform: rotate(-45deg);
+ }
+
+ @keyframes flowHorizontal {
+     0% {
+         left: 0;
+         opacity: 0;
+     }
+
+     10% {
+         opacity: 1;
+     }
+
+     90% {
+         opacity: 1;
+     }
+
+     100% {
+         left: 100%;
+         opacity: 0;
+     }
+ }
+
+ @keyframes flowVertical {
+     0% {
+         top: 0;
+         opacity: 0;
+     }
+
+     10% {
+         opacity: 1;
+     }
+
+     90% {
+         opacity: 1;
+     }
+
+     100% {
+         top: 100%;
+         opacity: 0;
+     }
+ }
+
+ @keyframes flowDiagonal {
+     0% {
+         top: 0;
+         left: 0;
+         opacity: 0;
+     }
+
+     10% {
+         opacity: 1;
+     }
+
+     90% {
+         opacity: 1;
+     }
+
+     100% {
+         top: 100%;
+         left: 100%;
+         opacity: 0;
+     }
+ }
+
+ /* Chip pins animation */
+ .chip-pin {
+     animation: pinAppear 0.5s forwards;
+ }
+
+ @keyframes pinAppear {
+     0% {
+         opacity: 0;
+         height: 0;
+     }
+
+     100% {
+         opacity: 1;
+         height: 4px;
+     }
+ }
+
+ /* Circuit chip complex animation */
+ .circuit-chip-complex {
+     animation: chipComplexAppear 1.5s forwards;
+ }
+
+ @keyframes chipComplexAppear {
+     0% {
+         opacity: 0;
+         border-color: rgba(159, 239, 0, 0);
+         background-color: rgba(159, 239, 0, 0);
+         box-shadow: none;
+     }
+
+     50% {
+         opacity: 1;
+         border-color: rgba(159, 239, 0, 0.6);
+         background-color: rgba(159, 239, 0, 0);
+         box-shadow: none;
+     }
+
+     100% {
+         opacity: 1;
+         border-color: rgba(159, 239, 0, 0.6);
+         background-color: rgba(159, 239, 0, 0.1);
+         box-shadow: 0 0 15px rgba(159, 239, 0, 0.2) inset;
+     }
+ }
+
+ .circuit-chip {
+     animation: drawChip 2s forwards ease-in-out;
+ }
+
+ @keyframes drawChip {
+     0% {
+         opacity: 0;
+         border-color: rgba(159, 239, 0, 0);
+         background-color: rgba(159, 239, 0, 0);
+     }
+
+     50% {
+         opacity: 1;
+         border-color: rgba(159, 239, 0, 0.6);
+         background-color: rgba(159, 239, 0, 0);
+     }
+
+     100% {
+         opacity: 1;
+         border-color: rgba(159, 239, 0, 0.6);
+         background-color: rgba(159, 239, 0, 0.1);
+     }
+ }
