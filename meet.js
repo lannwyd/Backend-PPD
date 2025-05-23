@@ -96,7 +96,7 @@ app.post('/create-session' ,async (req, res) => {
       description: description || '',
       session_date: new Date(),
       session_start_time: null,
-      session_end_time: null
+      session_end_time: 1
     });
     
     console.log('Session created:', sessionId);

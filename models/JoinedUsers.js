@@ -11,7 +11,7 @@ const JoinedUsers = sequelize.define("JoinedUsers", {
         },
     },
     session_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         primaryKey: true,
         references: {
             model: "Session",

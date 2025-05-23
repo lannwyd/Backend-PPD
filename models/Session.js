@@ -3,9 +3,9 @@ import sequelize from "./db.js";
 
 const Session = sequelize.define("Session", {
     session_id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
         primaryKey: true,
-        autoIncrement: true,
+     
     },
     session_name: {
         type: DataTypes.STRING,
