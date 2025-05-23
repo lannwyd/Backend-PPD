@@ -153,7 +153,7 @@ io.on('connection', (socket) => {
       const shouldBeHost = !session.host && session.participants.length === 0;
       
       socket.emit('session-status', { shouldBeHost });
-     io.to(clientID).emit('connected', ({username: user.first_name + " " + user.last_name}));
+
   
       console.log(`Session status check for ${sessionId}: shouldBeHost = ${shouldBeHost}`);
     } catch (error) {
