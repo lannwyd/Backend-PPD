@@ -39,9 +39,8 @@ export const getSessionById = async (req, res) => {
 export const getMySessions = async (req, res) => {
   try {
     const userId = req.user.user_id;
-    console.log('userId:', userId);
 
-    // Find all joined sessions for the user via JoinedUsers with included Session
+
     const joinedSessions = await JoinedUsers.findAll({
       where: { user_id: userId },
       include: {
@@ -54,7 +53,7 @@ export const getMySessions = async (req, res) => {
       return res.status(404).json({ error: 'No joined sessions found for this user' });
     }
 
-    // Extract just the sessions from the join entries
+  
     const sessions = joinedSessions.map(joined => joined.session);
 
     res.json(sessions);

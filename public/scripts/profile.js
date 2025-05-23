@@ -15,7 +15,7 @@ async function loadUserProfile() {
         }
 
         const data = await response.json();
-        console.log("Profile data received:", data);
+        
 
         if (!data || !data.data || !data.data.user) {
             throw new Error("Invalid profile data structure");

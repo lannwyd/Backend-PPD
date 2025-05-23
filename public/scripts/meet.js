@@ -30,8 +30,6 @@ const roomId = window.location.pathname.split('/').pop();
 
 
 peer.on('open', id => {
-    console.log('Peer connected with ID:', id);
-    
 
    
     socket.emit('check-session-status', { sessionId: roomId ,clientID:clientID});
@@ -41,7 +39,7 @@ peer.on('open', id => {
 
 socket.on('session-status', (data) => {
     isHost = data.shouldBeHost;
-    console.log('Session status received. Should be host:', isHost);
+ 
     
    
     socket.emit('join-session', {
@@ -57,7 +55,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     .then(stream => {
         localStream = stream;
         localVideo.srcObject = stream;
-        console.log('Local stream obtained');
+        
     })
     .catch(err => {
         console.error('Error accessing media devices:', err);
@@ -66,7 +64,7 @@ navigator.mediaDevices.getUserMedia({ video: true, audio: true })
 
 peer.on('call', call => {
     if (isAlreadyConnected(call.peer)) {
-        console.log(`Skipping duplicate incoming call from ${call.peer}`);
+        
         call.close();
         return;
     }
@@ -117,7 +115,7 @@ peer.on('call', call => {
 });
 
 socket.on('join-success', (data) => {
-    console.log('Successfully joined session:', data);
+
     isHost = data.isHost;
     
 
@@ -138,13 +136,13 @@ socket.on('join-success', (data) => {
 socket.on('host-privileges', (hasPrivileges) => {
     isHost = hasPrivileges;
     updateHostUI();
-    console.log('Host privileges:', hasPrivileges);
+;
 });
 
 socket.on('viewer-mode', (isViewer) => {
     isHost = !isViewer;
     updateHostUI();
-    console.log('Viewer mode:', isViewer);
+    
 });
 
 function updateHostUI() {
@@ -153,8 +151,6 @@ function updateHostUI() {
         screenShareBtn.style.display = isHost ? 'block' : 'none';
     }
     
-    // Update other host-only controls if needed
-    console.log('UI updated for host status:', isHost);
 }
 
 function isAlreadyConnected(peerId) {
@@ -162,7 +158,7 @@ function isAlreadyConnected(peerId) {
 }
 
 socket.on('existing-peers', (peerList) => {
-    console.log('Existing peers:', peerList);
+ 
  
     peerList.forEach(peerInfo => {
         if (peerInfo.peerId !== peer.id) {
@@ -177,7 +173,7 @@ socket.on('existing-peers', (peerList) => {
 });
 
 socket.on('new-peer', (peerInfo) => {
-    console.log('New peer joined:', peerInfo);
+
     if (peerInfo.peerId !== peer.id) {
         addUserCard(peerInfo.name, peerInfo.peerId, peerInfo.isHost);
         
@@ -189,7 +185,7 @@ socket.on('new-peer', (peerInfo) => {
 });
 
 socket.on('peer-disconnected', (data) => {
-    console.log('Peer disconnected:', data.peerId);
+
     if (peers[data.peerId]) {
         peers[data.peerId].container.remove();
         peers[data.peerId].call.close();
@@ -202,7 +198,7 @@ socket.on('peer-disconnected', (data) => {
 });
 
 socket.on('users-updated', (users) => {
-    console.log('Users updated:', users);
+   
     updateUsersList(users);
     updateOnlineCount();
 });
@@ -212,12 +208,12 @@ socket.on('new-message', ({ userName, message, timestamp }) => {
 });
 
 socket.on('host-screen-share-started', ({ peerId, userName }) => {
-    console.log(`${userName} started screen sharing.`);
+ 
     
 });
 
 socket.on('host-screen-share-stopped', ({ peerId, userName }) => {
-    console.log(`${userName} stopped screen sharing.`);
+
     screenShareVideo.innerHTML = '';
     screenShareVideo.style.display = 'none';
 });
@@ -225,7 +221,7 @@ socket.on('host-screen-share-stopped', ({ peerId, userName }) => {
 socket.on('promoted-to-host', () => {
     isHost = true;
     updateHostUI();
-    console.log('You have been promoted to host');
+  
     alert('You are now the host of this session');
 });
 
@@ -237,13 +233,13 @@ socket.on('error', (error) => {
 
 function connectToPeer(peerId, peerName) {
     if (isAlreadyConnected(peerId)) {
-        console.log(`Already connected to ${peerId}`);
+      
         return;
     }
 
     
     if (peerId < peer.id) {
-        console.log(`Skipping call to lower ID peer: ${peerId}`);
+      
         return;
     }
 
@@ -286,19 +282,19 @@ function addUserCard(userName, userId, isUserHost = false) {
     `;
     
     connectedUsers.appendChild(userCard);
-    console.log(`Added user card: ${userName} (${userId})`);
+    
 }
 
 function removeUserCard(userId) {
     const existingCard = connectedUsers.querySelector(`[data-peer-id="${userId}"]`);
     if (existingCard) {
         existingCard.remove();
-        console.log(`Removed user card: ${userId}`);
+      
     }
 }
 
 function updateUsersList(users) {
-    console.log('Updating users list with:', users);
+   
     connectedUsers.innerHTML = '';
     
     users.forEach(user => {
@@ -308,7 +304,7 @@ function updateUsersList(users) {
         }
     });
     
-    console.log(`Updated user list with ${users.length} users`);
+   
 }
 function addMessage(userName, message, timestamp) {
     const messageDiv = document.createElement('div');
@@ -328,7 +324,7 @@ function addMessage(userName, message, timestamp) {
 function updateOnlineCount() {
     const count = connectedUsers.children.length;
     onlineCount.textContent = `${count} online`;
-    console.log(`Online count updated: ${count} users`);
+  
 }
 
 // Event listeners
@@ -404,7 +400,7 @@ screenShareBtn.addEventListener('click', () => {
                     });
                     
                     screenCall.on('close', () => {
-                        console.log(`Screen share call to ${peerId} closed`);
+                      
                     });
                 });
                 
@@ -438,31 +434,21 @@ function stopScreenSharing() {
     }
 }
 
-// Handle peer connection errors
+
 peer.on('error', (err) => {
     console.error('Peer error:', err);
 });
 
-// Handle socket connection events
+
 socket.on('connect', () => {
-    console.log('Socket connected');
+
 });
 
 socket.on('disconnect', () => {
-    console.log('Socket disconnected');
+   
 });
 
 socket.on('connect_error', (error) => {
     console.error('Socket connection error:', error);
 });
 
-// Debug function
-if (window.location.hostname === 'localhost') {
-    setInterval(() => {
-        console.log('=== DEBUG INFO ===');
-        console.log('Is Host:', isHost);
-        console.log('Connected Peers:', Object.keys(peers));
-        console.log('User Cards:', connectedUsers.children.length);
-        console.log('==================');
-    }, 10000);
-}

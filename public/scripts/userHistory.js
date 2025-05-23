@@ -53,7 +53,7 @@ async function loadHistory(page = 1) {
 
         const { data, pagination } = await response.json();
         totalPages = pagination?.totalPages || 1;
-        console.log('History data:', data);
+       
         renderHistory(data);
 
     } catch (error) {

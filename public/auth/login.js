@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
-            console.log('Login response:', response);
+          
 
             if (!response.ok) {
                 if (data.unverified) {

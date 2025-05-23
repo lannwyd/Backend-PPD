@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     token: checkwebtocken()
   }
         });
-        console.log("Socket.io connection initialized");
+
         
         const clientpath = `client_${Math.random().toString(36).substr(2, 9)}`;
         const clientId = Math.floor(100000000 + Math.random() * 900000000);
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (stream_text) stream_text.style.display = "none";
             inputField.disabled=false;
             flash_btn.style.display = "block";
-            console.log("Control granted, starting session timer...");
+          
             
             let duration = 2 * 60; 
             
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         socket.on("compile-success", (base64Hex) => {
-            console.log("Compilation successful, received HEX file!");
+         
             localStorage.setItem("hexFile", base64Hex.hexBase64);
             
             if (consoleBox) {
@@ -164,9 +164,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 CompErr=CompErr+1;
                 socket.emit('Error-Counts', ({clientId,errorcount: CompErr}));
-                console.log(CompErr)
+               
             }catch(err){
-                console.log(err.mess);
+               
                 
             }
         });
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         
         socket.on("flash-success", () => {
-            console.log(" Flash successful");
+          
             
             if (consoleBox) {
                 const line = document.createElement('div');
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', function() {
             compile_btn.addEventListener('click', function(e) {
                 e.preventDefault();  
                 e.stopPropagation(); 
-                console.log(" Compile button clicked!");
+                
                 
                 if (consoleBox) consoleBox.innerHTML = ""; 
                 
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
             flash_btn.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation(); 
-                console.log("Flash button clicked!");
+              
                 
                 if (consoleBox) consoleBox.innerHTML = "";
                 

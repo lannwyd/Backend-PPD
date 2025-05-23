@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     recoveryForm.addEventListener('submit', async function(e) {
         e.preventDefault();
-        console.log('Form submitted with method:', this.method);
+      
 
         errorMessage.textContent = '';
         errorMessage.style.color = 'red';

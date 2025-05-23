@@ -28,9 +28,9 @@ const sequelize = new Sequelize(
 (async () => {
     try {
         await sequelize.authenticate();
-        console.log('✅ Database connection established successfully');
+        
     } catch (error) {
-        console.error('❌ Database connection failed:');
+        console.error(' Database connection failed:');
         console.error('1. Verify MySQL server is running');
         console.error('2. Check credentials in .env file');
         console.error('3. Ensure user has proper permissions');

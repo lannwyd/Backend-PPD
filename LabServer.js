@@ -23,12 +23,12 @@ const __dirname = path.dirname(__filename);
 async function initializeDatabase() {
   try {
     await sequelize.authenticate();
-    console.log("Database connection established");
+   
 
     setupAssociations();
 
     await sequelize.sync({ alter: true });
-    console.log("Database synchronized");
+  
 
     const { Role } = sequelize.models;
     await Role.findOrCreate({ where: { role_label: "student" } });
@@ -128,7 +128,7 @@ const uploadFile = async (filePath) => {
       resource_type: "auto",
       eager_async: false,
     });
-    console.log(result);
+
 
     return result.secure_url;
   } catch (err) {
@@ -208,9 +208,7 @@ ffmpeg.stdout.on("data", (chunk) => {
   }
 });
 
-// ffmpeg.stderr.on("data", (data) => {
-//     console.log("FFmpeg:", data.toString());
-// });
+
 
 // -------------------- Control Logic ---------------------
 function startControlTimer() {
@@ -239,17 +237,13 @@ function promoteNextClient() {
 
       if (clients[nextClient]) {
         currentClient = nextClient;
-        console.log(
-          `Promoting client ${currentClient} with ${lowestErrorCount} errors`
-        );
+      
 
         io.to(clients[currentClient]).emit("control-granted", lowestErrorCount);
         startControlTimer();
         break;
       } else {
-        console.log(
-          `Client ${nextClient} not found in clients map, removing from errorCounts`
-        );
+       
 
         const index = errorCounts.findIndex((c) => c.clientId === nextClient);
         if (index !== -1) {
@@ -262,7 +256,7 @@ function promoteNextClient() {
 
 // -------------------- Socket Events ---------------------
 io.on("connection", (socket) => {
-  console.log("🔌 New client connected");
+ 
 
   if (latestframe) {
     socket.emit("video-frame", latestframe);
@@ -271,7 +265,7 @@ io.on("connection", (socket) => {
   socket.on("register", (clientId) => {
     clients[clientId] = socket.id;
     errorCounts.push({ clientId, errorcount: 0 });
-    console.log("Socket ID and Client ID:", socket.id, clientId);
+   
     socket.join(clientId);
     if (!currentClient) {
       currentClient = clientId;
@@ -288,7 +282,7 @@ io.on("connection", (socket) => {
       (key) => clients[key] === socket.id
     );
     if (clientId) {
-      console.log(`Client ${clientId} disconnected`);
+   
 
       delete clients[clientId];
 
@@ -297,7 +291,7 @@ io.on("connection", (socket) => {
       );
       if (errorIndex !== -1) {
         errorCounts.splice(errorIndex, 1);
-        console.log(`Removed client ${clientId} from error counts`);
+       
       }
 
       if (clientId === currentClient) {
@@ -308,14 +302,11 @@ io.on("connection", (socket) => {
         waitlist = waitlist.filter((id) => id !== clientId);
       }
     }
-    console.log(
-      "Client disconnected, remaining clients:",
-      Object.keys(clients).length
-    );
+   
   });
 
   socket.on("Error-Counts", ({ clientId, errorcount }) => {
-    console.log("Received error count:", { clientId, errorcount });
+ 
 
     const clientIndex = errorCounts.findIndex(
       (client) => client.clientId === clientId
@@ -326,7 +317,7 @@ io.on("connection", (socket) => {
       errorCounts.push({ clientId, errorcount });
     }
 
-    console.log("Current error counts:", JSON.stringify(errorCounts));
+
 
     if (!currentClient) {
       promoteNextClient();
@@ -338,9 +329,7 @@ io.on("connection", (socket) => {
       const lowestErrorCount = sortedClients[0]?.errorcount;
 
       if (lowestErrorClient && lowestErrorClient !== currentClient) {
-        console.log(
-          `Client ${lowestErrorClient} has lower errors (${lowestErrorCount}) than current client ${currentClient}`
-        );
+       
         promoteNextClient();
       }
     }
@@ -352,12 +341,12 @@ io.on("connection", (socket) => {
       const tempDir = path.join(os.tmpdir(), clientpath);
       await fs.mkdir(tempDir, { recursive: true });
       const inoPath = path.join(tempDir, `${clientpath}.ino`);
-      console.log("Writing code to:", inoPath);
+   
       await fs.writeFile(inoPath, code);
 
       const inoUrl = await uploadFile(inoPath);
 
-      console.log("Uploaded INO file to Cloudinary:", inoUrl);
+   
 
       const compile = spawn(process.env.ARDUINO_CLI_COMMAND, [
         "compile",
@@ -382,7 +371,7 @@ io.on("connection", (socket) => {
           const hexData = await fs.readFile(hexPath, "utf8");
 
           const hexUrl = await uploadFile(hexPath);
-          console.log("Uploaded HEX file to Cloudinary:", hexUrl);
+   
           const historyData = {
             user_history_id: clientId,
             user_id: socket.user.id,
@@ -400,7 +389,7 @@ io.on("connection", (socket) => {
               "action_timestamp",
             ],
           });
-          console.log("History entry created successfully");
+         
 
           io.to(clients[clientId]).emit("compile-success", {
             hexBase64: hexData.toString("base64"),
@@ -446,6 +435,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("reset-device", async (clientId) => {
+    serial.close();
     const hexPath = path.join(__dirname, "reset.hex");
 
     const hexData = await fs.readFile(hexPath);
@@ -455,6 +445,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("test-device", async (clientId) => {
+    serial.close();
     const hexPath = path.join(__dirname, "test.hex");
     const hexData = await fs.readFile(hexPath, "utf8");
     const hexbase64 = hexData.toString("base64");
@@ -463,10 +454,11 @@ io.on("connection", (socket) => {
 
   //---------------------Serial Monitor---------------------
   serial.on("open", () => {
-    console.log("Serial port opened.");
+  
+    io.emit("serial-opened");
   });
   socket.on("serial-command", ({ clientId, command }) => {
-    console.log(`Sending to Arduino: ${command}`);
+
 
     serial.write(command.trim() + "\n", (err) => {
       if (err) {
@@ -476,7 +468,6 @@ io.on("connection", (socket) => {
     });
   });
   serial.on("data", (data) => {
-    console.log("Arduino says:", data.toString());
 
     io.emit("serial-data", data.toString());
   });
@@ -487,7 +478,6 @@ const PORT = 4000;
 server.listen(PORT, async () => {
   try {
     await initializeDatabase();
-    console.log(` Lab Server running on port ${PORT}`);
   } catch (error) {
     console.error("Server startup failed:", error);
     process.exit(1);

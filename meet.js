@@ -22,12 +22,12 @@ const server = http.createServer(app);
 async function initializeDatabase() {
   try {
     await sequelize.authenticate();
-    console.log(" Database connection established");
+    
 
     setupAssociations();
 
     await sequelize.sync({ alter: true });
-    console.log(" Database synchronized");
+    
 
     const { Role } = sequelize.models;
     await Role.findOrCreate({ where: { role_label: "student" } });
@@ -102,7 +102,7 @@ app.post('/create-session' ,protect,async (req, res) => {
       session_start_time: null,
       session_end_time: 1
     });
-    console.log(req.user);
+
     await JoinedUsers.create({
       user_id:req.user.user_id,
       session_id: sessionId,
@@ -110,7 +110,7 @@ app.post('/create-session' ,protect,async (req, res) => {
     
     });
 
-    console.log('Session created:', sessionId);
+
     res.json({ sessionId, message: 'Session created successfully' });
   } catch (error) {
     console.error('Error creating session:', error);
@@ -136,7 +136,7 @@ app.get('/:sessionId' ,protect, async(req, res) => {
 
 
 io.on('connection', (socket) => {
-  console.log('User connected:', socket.id);
+
   
 
   
@@ -155,7 +155,6 @@ io.on('connection', (socket) => {
       socket.emit('session-status', { shouldBeHost });
 
   
-      console.log(`Session status check for ${sessionId}: shouldBeHost = ${shouldBeHost}`);
     } catch (error) {
       console.error('Error checking session status:', error);
       socket.emit('error', 'Failed to check session status');
@@ -164,10 +163,10 @@ io.on('connection', (socket) => {
 
   socket.on('join-session', ({ sessionId, userName, isHost, peerId }) => {
     try {
-      console.log(`Join session request: ${userName} -> ${sessionId} (${isHost ? 'host' : 'participant'})`);
+
       
       if (!sessions.has(sessionId)) {
-        console.log('Session not found:', sessionId);
+     
         socket.emit('error', 'Session not found');
         return;
       }
@@ -196,19 +195,19 @@ io.on('connection', (socket) => {
         user.isHost = true;
         session.host = user;
         socket.emit('host-privileges', true);
-        console.log(`${userName} assigned as host for session ${sessionId}`);
+      
       } else if (isHost && session.host) {
       
         user.isHost = false;
         session.participants.push(user);
         socket.emit('viewer-mode', true);
-        console.log(`${userName} joined as participant (host already exists) in session ${sessionId}`);
+     
       } else {
 
         user.isHost = false;
         session.participants.push(user);
         socket.emit('viewer-mode', true);
-        console.log(`${userName} joined as participant in session ${sessionId}`);
+       
       }
 
 
@@ -228,7 +227,7 @@ io.on('connection', (socket) => {
       
       if (existingPeers.length > 0) {
         socket.emit('existing-peers', existingPeers);
-        console.log(`Sent ${existingPeers.length} existing peers to ${userName}`);
+        
       }
       
       
@@ -250,8 +249,7 @@ io.on('connection', (socket) => {
         totalUsers: connectedUsers.length
       });
 
-      console.log(`${userName} successfully joined session ${sessionId}. Total users: ${connectedUsers.length}. Is host: ${user.isHost}`);
-      
+   
     } catch (error) {
       console.error('Error in join-session:', error);
       socket.emit('error', 'Failed to join session');
@@ -261,7 +259,7 @@ io.on('connection', (socket) => {
   socket.on('chat-message', ({ sessionId, message, userName }) => {
     try {
       const timestamp = new Date().toLocaleTimeString();
-      console.log(`Chat message in ${sessionId}: ${userName}: ${message}`);
+      
       
      
       io.to(sessionId).emit('new-message', {
@@ -279,7 +277,7 @@ io.on('connection', (socket) => {
   socket.on('video-control', ({ sessionId, action }) => {
     const user = users.get(socket.id);
     if (user && user.isHost) {
-      console.log(`Host ${user.name} video control: ${action}`);
+      
       socket.to(sessionId).emit('host-video-control', { action });
     } else {
       socket.emit('error', 'Only host can control video');
@@ -289,7 +287,6 @@ io.on('connection', (socket) => {
   socket.on('audio-control', ({ sessionId, action }) => {
     const user = users.get(socket.id);
     if (user && user.isHost) {
-      console.log(`Host ${user.name} audio control: ${action}`);
       socket.to(sessionId).emit('host-audio-control', { action });
     } else {
       socket.emit('error', 'Only host can control audio');
@@ -300,7 +297,7 @@ io.on('connection', (socket) => {
   socket.on('start-screen-share', ({ sessionId }) => {
     const user = users.get(socket.id);
     if (user && user.isHost) {
-      console.log(`Host ${user.name} started screen sharing in ${sessionId}`);
+ 
       socket.to(sessionId).emit('host-screen-share-started', { 
         peerId: user.peerId,
         userName: user.name
@@ -313,7 +310,7 @@ io.on('connection', (socket) => {
   socket.on('stop-screen-share', ({ sessionId }) => {
     const user = users.get(socket.id);
     if (user && user.isHost) {
-      console.log(`Host ${user.name} stopped screen sharing in ${sessionId}`);
+   
       socket.to(sessionId).emit('host-screen-share-stopped', {
         peerId: user.peerId,
         userName: user.name
@@ -323,13 +320,13 @@ io.on('connection', (socket) => {
 
 
   socket.on('disconnect', () => {
-    console.log('User disconnected:', socket.id);
+   
     
     const user = users.get(socket.id);
     if (user) {
       const session = sessions.get(user.sessionId);
       if (session) {
-        console.log(`${user.name} left session ${user.sessionId}`);
+      
         
    
         socket.to(user.sessionId).emit('peer-disconnected', { 
@@ -340,7 +337,7 @@ io.on('connection', (socket) => {
         if (user.isHost) {
         
           session.host = null;
-          console.log(`Host ${user.name} disconnected from session ${user.sessionId}`);
+       
           
          
           if (session.participants.length > 0) {
@@ -361,7 +358,6 @@ io.on('connection', (socket) => {
               });
             }
             
-            console.log(`${newHost.name} promoted to host in session ${user.sessionId}`);
           } else {
             
             socket.to(user.sessionId).emit('host-disconnected');
@@ -381,7 +377,7 @@ io.on('connection', (socket) => {
       
         if (connectedUsers.length === 0) {
           sessions.delete(user.sessionId);
-          console.log(`Session ${user.sessionId} deleted (empty)`);
+          
         }
       }
       
@@ -402,18 +398,7 @@ function generateSessionId() {
 }
 
 
-function logSessionStates() {
-  console.log('\n=== SESSION STATES ===');
-  sessions.forEach((session, sessionId) => {
-    console.log(`Session ${sessionId}:`);
-    console.log(`  Host: ${session.host ? `${session.host.name} (${session.host.peerId})` : 'None'}`);
-    console.log(`  Participants: ${session.participants.length}`);
-    session.participants.forEach((p, i) => {
-      console.log(`    ${i + 1}. ${p.name} (${p.peerId})`);
-    });
-  });
-  console.log('=====================\n');
-}
+
 
 
 setInterval(() => {
@@ -425,14 +410,11 @@ setInterval(() => {
    
     if (hoursDiff > 24 && !session.host && session.participants.length === 0) {
       sessions.delete(sessionId);
-      console.log(`Cleaned up old session: ${sessionId}`);
     }
   }
   
 
-  if (process.env.NODE_ENV !== 'production') {
-    logSessionStates();
-  }
+  
 }, 60000);
 
 
@@ -448,11 +430,7 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, async () => {
   try {
     await initializeDatabase();
-    
-    console.log(`Server running on port ${PORT}`);
-    console.log(`WebRTC signaling server ready`);
-    console.log(`PeerJS server running on http://localhost:${PORT}/peerjs`);
-    console.log(`Socket.IO server running on http://localhost:${PORT}`);
+   
   } catch (error) {
     console.error('Failed to start server:', error);
   }
