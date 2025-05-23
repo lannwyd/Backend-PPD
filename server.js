@@ -161,7 +161,7 @@ app.use('/auth', authRoutes);
 const htmlRoutes = [
     '/', '/login', '/register', '/dashboard',
     '/profile', '/Account-verification',"/LabRoom",
-    '/history', '/history/teacher'
+    '/history', '/history/teacher','/Documentation',
 ];
 
 htmlRoutes.forEach(route => {

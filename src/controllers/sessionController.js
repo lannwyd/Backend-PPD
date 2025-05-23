@@ -1,4 +1,6 @@
 import Session from "../../models/Session.js";
+import User from "../../models/User.js";
+import JoinedUsers from "../../models/JoinedUsers.js";
 
 
 
@@ -35,25 +37,29 @@ export const getSessionById = async (req, res) => {
 
 
 export const getMySessions = async (req, res) => {
-    try {
-    
-        const sessions = await Session.findAll({
-            
-         
-            order: [
-                ['session_date', 'ASC'],
-                ['session_start_time', 'ASC']
-            ]
-        });
+  try {
+    const userId = req.user.user_id;
+    console.log('userId:', userId);
 
-        // Filter out past sessions if needed (optional)
-        const currentDate = new Date().toISOString().split('T')[0];
-        const upcomingSessions = sessions.filter(session =>
-            session.session_date >= currentDate
-        );
+    // Find all joined sessions for the user via JoinedUsers with included Session
+    const joinedSessions = await JoinedUsers.findAll({
+      where: { user_id: userId },
+      include: {
+        model: Session,
+        as: 'session',
+      },
+    });
 
-        respond(res, 200, upcomingSessions);
-    } catch (error) {
-        respond(res, 500, null, `Failed to fetch your sessions: ${error.message}`);
+    if (!joinedSessions || joinedSessions.length === 0) {
+      return res.status(404).json({ error: 'No joined sessions found for this user' });
     }
+
+    // Extract just the sessions from the join entries
+    const sessions = joinedSessions.map(joined => joined.session);
+
+    res.json(sessions);
+  } catch (error) {
+    console.error('Error fetching joined sessions:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 };

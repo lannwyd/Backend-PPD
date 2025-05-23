@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Getting Started with IoT Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = { theme: { extend: { fontFamily: { roboto: ['Roboto', 'sans-serif'], }, } } }
+    </script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111927;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #1A2332;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #111927;
+        }
+
+        body {
+            background-color: #111927;
+        }
+
+        .text-primary-accent {
+            color: #9FEF00;
+
+        }
+
+        .bg-primary-accent {
+            background-color: #9FEF00;
+        }
+
+        .card-bg {
+            background-color: #1A2332;
+        }
+
+        .text-muted {
+            color: #D1D5DB;
+        }
+
+        .code-block-bg {
+            background-color: #111927;
+        }
+
+        .highlight-box {
+            background-color: #0f172a;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 30px;
+        }
+    </style>
+</head>
+<nav class="bg-[#111927] text-[#E5E7EB] flex items-center justify-between px-6 py-4 border-b border-[#1F2937]">
+    <div class="flex items-center ml-10">
+        <img src="./Documents/IoT.svg" alt="IoT Logo" class="w-6 h-6 mr-3">
+        <span class="font-semibold text-lg mr-5">IoT Lab</span>
+        <div class="flex space-x-5">
+            <a href="dashboard.html" class="hover:text-[#9FEF00]">Dashboard</a>
+            <a href="#" class="hover:text-[#9FEF00]">History</a>
+            <a href="#" class="text-[#9FEF00]">Documentation</a>
+        </div>
+    </div>
+</nav>
+
+<body class="text-white font-sans">
+    <div class="px-[112px] py-10">
+        <div class="flex gap-[120px]">
+            <div class="w-[370px] flex-shrink-0 sticky top-10 h-fit">
+                <div class="card-bg rounded-lg p-6 shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Documentation</h2>
+                    <ul class="space-y-4">
+                        <a href="#getting-started"
+                            class="flex items-center text-gray-300 hover:text-[#9FEF00] font-medium transition">
+                            <img src="./Documents/gettingstarted.svg" alt=" " class="mr-2 h-4 w-4 inline-block ">
+                            Getting Started
+                        </a>
+                        <a href="#arduino-basics"
+                            class="flex items-center text-gray-300 font-medium hover:text-[#9FEF00] transition">
+                            <img src="./Documents/ardbasics.svg" alt=" " class="mr-2 h-4 w-4 inline-block ">
+                            Arduino Basics
+                        </a>
+                        <a href="#configuration"
+                            class="flex items-center text-gray-300 font-medium hover:text-[#9FEF00] transition">
+                            <img src="./Documents/configuration.svg" alt=" " class="mr-2 h-4 w-4 inline-block ">
+                            Configuration
+                        </a>
+                        <a href="#circuit-configuration"
+                            class="flex items-center text-gray-300 font-medium hover:text-[#9FEF00] transition">
+                            <img src="./Documents/camera.svg" alt="" class="mr-2 h-4 w-4 inline-block ">
+                            Circuit Configuration
+                        </a>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="flex-1 space-y-6 font-roboto">
+                <h1 id="getting-started" class="text-3xl text-primary-accent font-bold font-roboto mb-6">Getting Started
+                    with IoT Lab</h1>
+
+                <div class="card-bg p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4 font-roboto">Introduction</h2>
+                    <p class="text-muted mb-6 font-roboto text-[16px]">
+                        Welcome to IoT Lab documentation. This guide will help you understand how to use our
+                        remote practical work platform for IoT experiments using Arduino.
+                    </p>
+                    <div class="highlight-box p-4 rounded-md flex items-start space-x-3 items-center">
+                        <svg class="h-5 w-5 text-primary-accent flex-shrink-0 mt-0.2  "
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <p class="text-sm text-muted">Make sure you have an account to access the lab resources.</p>
+                    </div>
+                </div>
+
+                <div class="card-bg p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Setup Requirements</h2>
+                    <ul class="space-y-3">
+                        <li class="flex items-center">
+                            <svg class="h-5 w-5 text-primary-accent mr-3" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-gray-300">Modern web browser</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-5 w-5 text-primary-accent mr-3" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-gray-300">Stable internet connection</span>
+                        </li>
+                        <li class="flex items-center">
+                            <svg class="h-5 w-5 text-primary-accent mr-3" xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd"
+                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                                    clip-rule="evenodd" />
+                            </svg>
+                            <span class="text-gray-300">Basic knowledge of Arduino programming</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-bg p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Setup Steps</h2>
+                    <ol class="list-none space-y-4">
+                        <li class="flex items-start">
+                            <span
+                                class="flex-shrink-0 bg-primary-accent text-gray-900 rounded-full h-[30px] w-[30px] text-xs font-semibold flex items-center justify-center mr-3 mt-1">1</span>
+                            <div>
+                                <h3 class="font-medium text-gray-200">Create Account</h3>
+                                <p class="text-sm text-[#9CA3AF]">Sign up for a new account or login to your
+                                    account.</p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span
+                                class="flex-shrink-0 bg-primary-accent text-gray-900 rounded-full h-[30px] w-[30px] text-xs font-semibold flex items-center justify-center mr-3 mt-1">2</span>
+                            <div>
+                                <h3 class="font-medium text-gray-200">Access Lab</h3>
+                                <p class="text-sm text-[#9CA3AF]"></p>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span
+                                class="flex-shrink-0 bg-primary-accent text-gray-900 rounded-full h-[30px] w-[30px] text-xs font-semibold flex items-center justify-center mr-3 mt-1">3</span>
+                            <div>
+                                <h3 class="font-medium text-gray-200">Connect to Board</h3>
+                                <p class="text-sm text-[#9CA3AF]">Camera access is given to the user with no compilation
+                                    errors for a limited time. After the timer ends, they must rejoin to regain access.
+                                </p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+                <div class="card-bg p-6 rounded-lg shadow-md">
+                    <h2 class="text-xl font-semibold mb-4">Quick Start Guide</h2>
+                    <div class="space-y-6 text-[16px]">
+                        <div>
+                            <h3 class="font-regular text-primary-accent mb-1"><span class="">1.</span> Write Your Code
+                            </h3>
+                            <p class="text-sm text-muted mb-3">Use our online editor to write your Arduino code:</p>
+                            <div class="code-block-bg p-4 rounded-md overflow-x-auto">
+                                <pre><code class="language-c text-sm text-muted">// Example Arduino Sketch
+void setup() {
+  pinMode(LED_BUILTIN, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(LED_BUILTIN, HIGH);
+  // Add more code here
+}</code></pre>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-regular  text-primary-accent mb-1"><span>2.</span> Compile</h3>
+                            <p class="text-sm text-muted">After writing your code, click the "Compile" button in the
+                                editor
+                                to check
+                                for errors and prepare the code for upload.</p>
+                            <div
+                                class="mt-3 bg-primary-accent text-gray-900 rounded-lg py-2 px-6 text-sm font-semibold hover:bg-opacity-80 transition inline-block  center justify-center">
+                                <img src="./Documents/compile.svg" alt="" class="mr-2 h-4 w-4 inline-block ">
+                                <span class="inline-block">Compile Code</span>
+
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-regular text-primary-accent mb-1"><span>3.</span> Run
+                            </h3>
+                            <p class="text-sm text-muted">Once compilation is successful, click "Upload" to send your
+                                code
+                                to the
+                                Arduino board connected to the IoT Lab platform.</p>
+                            <div
+                                class="mt-3  border border-[#9fef00] text-[#9fef00] rounded-lg py-2 px-6 text-sm font-semibold  transition inline-block center  justify-center">
+
+                                <img src="./Documents/runsvg.svg" alt="" class="mr-2 h-6 w-6 inline-block ">
+                                <span class="inline-block">Run Code</span>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="font-regular text-primary-accent mb-1"><span>4.</span> View Results
+                            </h3>
+                            <p class="text-sm text-muted mb-2">After running the code, the camera feed will
+                                automatically
+                                open:.</p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <h1 id="arduino-basics" class="text-3xl text-primary-accent font-bold font-roboto mb-6">Arduino Basics
+                </h1>
+                <div class="card-bg p-6 rounded-lg shadow-md font-roboto text-white space-y-6">
+                    <div>
+                        <h3 class="font-regular text-primary-accent mb-1">
+                            <span class="text-base mr-1">1.</span> What is Arduino?
+                        </h3>
+                        <p class="text-[16px] text-muted font-roboto ">
+                            Arduino is an open-source electronics platform based on easy-to-use hardware and software.
+                            It's widely used for building digital devices and interactive objects that can sense and
+                            control the physical world.
+                        </p>
+                    </div>
+
+                    <div>
+                        <h3 class="font-regular text-primary-accent mb-1">
+                            <span class="text-base mr-1">2.</span> Key Components:
+                        </h3>
+                        <ul class="list-none text-[16px] text-muted font-roboto space-y-1">
+                            <li>Microcontroller</li>
+                            <li>Digital Pins (0–13)</li>
+                            <li>Analog Pins (A0–A5)</li>
+                            <li>USB Port</li>
+                            <li>Power Jack</li>
+                            <li>Reset Button</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 class="font-regular text-primary-accent mb-4">
+                            <span class="text-base mr-1">3.</span> Basic Tools Needed
+                        </h3>
+                        <ul class="space-y-2 text-[16px] text-muted font-roboto  ">
+                            <li class="flex items-center">
+                                Arduino board (Uno, Mega, etc.)
+                            </li>
+                            <li class="flex items-center">
+                                USB cable
+                            </li>
+                            <li class="flex items-center">
+                                Jumper wires
+                            </li>
+                            <li class="flex items-center">
+                                LEDs, resistors, sensors (e.g., temperature or motion)
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="highlight-box p-4 rounded-md flex items-start space-x-3 items-center">
+                        <svg class="h-5 w-5 text-primary-accent flex-shrink-0 mt-0.2  "
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <p class="text-sm text-muted">Don’t worry — we provide all of these on our platform, so you can
+                            get started right away without needing physical components</p>
+                    </div>
+                </div>
+
+
+                <div class="card-bg p-6 rounded-lg shadow-md font-roboto">
+
+                    <div>
+                        <h3 class="font-bold text-primary-accent mb-1"> Example: Blink an LED
+                        </h3>
+                        <p class="text-sm text-muted mb-3 ">This simple code makes the built-in LED on pin 6
+                            blink on
+                            and off every second.</p>
+                        <div class="code-block-bg p-4 rounded-md overflow-x-auto">
+                            <pre><code class="language-c text-sm text-gray-300">// LED on pin 6 blink on and off every second.
+void setup() {
+  pinMode(6, OUTPUT); // Set pin 6 as output
+}
+
+void loop() {
+  digitalWrite(6, HIGH); // LED on
+  delay(1000);           // Wait 1 second
+  digitalWrite(6, LOW);  // LED off
+  delay(1000);           // Wait 1 second
+
+}</code></pre>
+                        </div>
+                    </div>
+
+                </div>
+                <h1 id="configuration" class="text-3xl text-primary-accent font-bold font-roboto mb-6">
+                    Configuration
+                </h1>
+
+
+
+                <div class="grid grid-cols-2 gap-6 font-roboto">
+                    <div class="card-bg p-6 rounded-lg shadow-md">
+                        <h3 class="font-bold text-primary-accent mb-4">Sensors List</h3>
+                        <ul class="space-y-2 text-[#F3F4F6] font-roboto text-sm ">
+                            <li class="flex items-center">
+                                <img src="./Documents/Vector.svg" alt="" class="w-4 h-4 mr-2">
+                                PushButton × 2
+                            </li>
+                            <li class="flex items-center">
+                                <img src="./Documents/Vector.svg" alt="" class="w-4 h-4 mr-2">
+                                Potentiometer × 1
+                            </li>
+                            <li class="flex items-center">
+                                <img src="./Documents/Vector.svg" alt="" class="w-4 h-4 mr-2">
+                                Light Dependent Resistor × 1
+                            </li>
+                            <li class="flex items-center">
+                                <img src="./Documents/Vector.svg" alt="" class="w-4 h-4 mr-2">
+                                LM35 Temperature × 1
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card-bg p-6 rounded-lg shadow-md">
+                        <h3 class="font-bold text-primary-accent mb-4">Actuators List</h3>
+                        <ul class="space-y-2 text-[#F3F4F6] font-roboto text-sm">
+                            <li class="flex items-center">
+                                <img src="./Documents/Vector.svg" alt="" class="w-4 h-4 mr-2">
+                                LED × 3
+                            </li>
+                            <li class="flex items-center">
+                                <img src="./Documents/Vector.svg" alt="" class="w-4 h-4 mr-2">
+                                Buzzer × 1
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+
+                <div class="card-bg p-6 rounded-lg shadow-md">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full bg-[#374151] bg-opacity-10 rounded-lg overflow-hidden">
+                            <thead class="bg-[#374151]">
+                                <tr class="border-b border-[#374151] rounded-t-lg">
+                                    <th
+                                        class="px-4 py-2 text-left text-sm font-medium first:rounded-tl-lg last:rounded-tr-lg">
+                                        Item</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium">Pin Number</th>
+                                    <th class="px-4 py-2 text-left text-sm font-medium">Input/Output</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-[#374151] bg-[#1F2937]">
+                                    <td class="px-4 py-2 text-sm text-muted">Green Push Button</td>
+                                    <td class="px-4 py-2 text-sm text-muted">12</td>
+                                    <td class="px-4 py-2 text-sm text-muted">Digital Input</td>
+                                </tr>
+                                <tr class="border-b border-[#374151] bg-[#1A2332]">
+                                    <td class="px-4 py-2 text-sm text-muted">Red Push Button</td>
+                                    <td class="px-4 py-2 text-sm text-muted">7</td>
+                                    <td class="px-4 py-2 text-sm text-muted">Digital Input</td>
+                                </tr>
+                                <tr class="border-b border-[#374151] bg-[#1F2937]">
+                                    <td class="px-4 py-2 text-sm text-muted">Green LED</td>
+                                    <td class="px-4 py-2 text-sm text-muted">6</td>
+                                    <td class="px-4 py-2 text-sm text-muted">D/A Output</td>
+                                </tr>
+                                <tr class="border-b border-[#374151] bg-[#1A2332]">
+                                    <td class="px-4 py-2 text-sm text-muted">Yellow LED</td>
+                                    <td class="px-4 py-2 text-sm text-muted">5</td>
+                                    <td class="px-4 py-2 text-sm text-muted">D/A Output</td>
+                                </tr>
+                                <tr class="border-b border-[#374151] bg-[#1F2937]">
+                                    <td class="px-4 py-2 text-sm text-muted">Red LED</td>
+                                    <td class="px-4 py-2 text-sm text-muted">4</td>
+                                    <td class="px-4 py-2 text-sm text-muted">D/A Output</td>
+                                </tr>
+                                <tr class="border-b border-[#374151] bg-[#1A2332]">
+                                    <td class="px-4 py-2 text-sm text-muted">Buzzer</td>
+                                    <td class="px-4 py-2 text-sm text-muted">11</td>
+                                    <td class="px-4 py-2 text-sm text-muted">D/A Output</td>
+                                </tr>
+                                <tr class="border-b border-[#374151] bg-[#1F2937]">
+                                    <td class="px-4 py-2 text-sm text-muted">LM35 Sensor</td>
+                                    <td class="px-4 py-2 text-sm text-muted">A0</td>
+                                    <td class="px-4 py-2 text-sm text-muted">Analog Input</td>
+                                </tr>
+                                <tr class="border-b border-[#374151] bg-[#1A2332]">
+                                    <td class="px-4 py-2 text-sm text-muted">LDR Sensor</td>
+                                    <td class="px-4 py-2 text-sm text-muted">A1</td>
+                                    <td class="px-4 py-2 text-sm text-muted">Analog Input</td>
+                                </tr>
+                                <tr class="border-[#374151] bg-[#1F2937]">
+                                    <td class="px-4 py-2 text-sm text-muted first:rounded-bl-lg">Potentiometer
+                                    </td>
+                                    <td class="px-4 py-2 text-sm text-muted">A4</td>
+                                    <td class="px-4 py-2 text-sm text-muted last:rounded-br-lg">Analog Input
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <h1 id="circuit-configuration" class="text-3xl text-primary-accent font-bold font-roboto mb-6">
+                    Circuit
+                    Configuration</h1>
+                <div class="card-bg p-6 rounded-lg shadow-md font-roboto">
+                    <h3 class="font-bold text-primary-accent mb-4">Circuit Diagram</h3>
+                    <img src="./Documents/circ 1.jpg" alt="Circuit Diagram" class="w-full h-auto rounded-lg">
+                    <p class="text-sm text-muted mt-4 text-center">The above diagram shows the circuit configuration
+                        for the
+                        Arduino
+                        board with the sensors and actuators.</p>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <footer class="border-t border-gray-800 bg-[#0D141E] py-12 mt-10 p">
+        <div class="container mx-auto px-4">
+            <div class="mb-8 flex flex-col items-center justify-between gap-4 md:flex-row">
+                <div class="flex items-center gap-2">
+                    <img src="./Documents/IoT.svg" alt="">
+                    <span class="text-xl font-bold">IoT Lab</span>
+                </div>
+                <div class="flex gap-4">
+
+                </div>
+            </div>
+            <div class="text-center text-sm text-gray-500">© 2025 IoT Lab Platform.</div>
+        </div>
+    </footer>
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+
+                if (targetElement) {
+                    const startPosition = window.pageYOffset;
+                    const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset - 25;
+                    const distance = targetPosition - startPosition;
+                    const duration = 0; // ms
+                    let startTime = null;
+
+                    function easeInOutQuad(t, b, c, d) {
+                        t /= d / 2;
+                        if (t < 1) return c / 2 * t * t + b;
+                        t--;
+                        return -c / 2 * (t * (t - 2) - 1) + b;
+                    }
+
+                    function animation(currentTime) {
+                        if (startTime === null) startTime = currentTime;
+                        const timeElapsed = currentTime - startTime;
+                        const run = easeInOutQuad(timeElapsed, startPosition, distance, duration);
+                        window.scrollTo(0, run);
+                        if (timeElapsed < duration) {
+                            requestAnimationFrame(animation);
+                        } else {
+                            window.scrollTo(0, targetPosition);
+                        }
+                    }
+
+                    requestAnimationFrame(animation);
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

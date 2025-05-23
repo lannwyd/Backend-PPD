@@ -442,3 +442,11 @@ main #Gif_recent_sessions #Res_Sess .tables .session_time {
     margin-top: 10px;
     color: #EF4444;
 }
+#session_hist{
+    overflow: scroll;
+    scrollbar-color: #374151 #111927;
+    scrollbar-width: thin;
+    scrollbar-gutter: stable;
+    height: 300px;
+
+}

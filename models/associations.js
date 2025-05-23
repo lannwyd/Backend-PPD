@@ -19,27 +19,29 @@ function setupAssociations() {
         as: 'users'
     });
 
-  
-  
-
-
- 
-
-
-
-    // Additional direct associations for JoinedUsers
-    JoinedUsers.belongsTo(User, {
-        foreignKey: 'user_id',
-        as: 'user'
-    });
-
-
+    // User to JoinedUsers (One-to-Many)
     User.hasMany(JoinedUsers, {
         foreignKey: 'user_id',
         as: 'roomMemberships'
     });
 
-  
+    JoinedUsers.belongsTo(User, {
+        foreignKey: 'user_id',
+        as: 'user'
+    });
+
+    // JOINED USERS <-> SESSION
+    JoinedUsers.belongsTo(Session, {
+        foreignKey: 'session_id',
+        as: 'session'
+    });
+
+    Session.hasMany(JoinedUsers, {
+        foreignKey: 'session_id',
+        as: 'participants'
+    });
+
+    // User to UserHistory (One-to-Many)
     User.hasMany(UserHistory, {
         foreignKey: 'user_id',
         as: 'history'
@@ -50,5 +52,6 @@ function setupAssociations() {
         as: 'user'
     });
 }
+
 
 export default setupAssociations;

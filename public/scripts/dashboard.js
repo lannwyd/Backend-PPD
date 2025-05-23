@@ -16,6 +16,7 @@ const userPicture = document.getElementById("profile-icon");
 document.addEventListener('DOMContentLoaded', function() {
     loadUserProfile();
     setupEventListeners();
+    displaySessionData();
 });
 let user;
 async function loadUserProfile() {
@@ -31,6 +32,7 @@ async function loadUserProfile() {
         const { data } = await response.json();
          user = data.user;
         const role = data.role;
+      
       
 
         if (welcomeMessage) {
@@ -233,4 +235,61 @@ function setupEventListeners() {
 function navigateToProfile() {
     const userRole = localStorage.getItem('userRole') || 'student';
     window.location.href = '/profile';
+}
+
+async function fetchSessionData() {
+    try {
+        const response = await fetch('/api/sessions/my-sessions', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                
+            },
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch session data');
+        }
+
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error('Error fetching session data:', error);
+    }
+}
+
+ function displaySessionData() {
+    const sessionContainer = document.getElementById("session_hist");
+    sessionContainer.innerHTML = '';
+   const data= fetchSessionData();
+    data.then((data) => {
+        if (data && data.length > 0) {
+            data.forEach(session => {
+                const sessionDiv = document.createElement("div");
+                sessionDiv.className = "session";
+                sessionDiv.innerHTML = `
+                     <div class="tables">
+                    <div class="session_info">
+                        <span id="name_ss">
+                            <h3>${session.session_name}</h3>
+                        </span>
+                       
+                    </div>
+                    <div class="session_discription">
+                        <p>${session.description}</p>
+                    </div>
+                    <div class="session_time">
+                        <p>Created: <span id="time1">${session.session_date}</span>ago</p>
+                    </div>
+                </div>
+                `;
+                sessionContainer.appendChild(sessionDiv);
+            });
+        } else {
+            sessionContainer.innerHTML = "<p>No sessions found.</p>";
+        }
+    });
+
 }
