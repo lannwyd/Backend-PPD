@@ -129,13 +129,12 @@ io.on('connection', (socket) => {
 
       const session = sessions.get(sessionId);
       
-      // Check if user already exists (prevent duplicates)
+
       if (users.has(socket.id)) {
         console.log('User already exists, skipping...');
         return;
       }
-      
-      // Determine if should be host
+
       const shouldBeHost = !session.host && session.participants.length === 0;
       
       const user = {
@@ -150,7 +149,7 @@ io.on('connection', (socket) => {
       socket.join(sessionId);
       users.set(socket.id, user);
 
-      // Set as host or participant
+   
       if (shouldBeHost) {
         session.host = user;
         socket.emit('host-privileges', true);
@@ -163,10 +162,9 @@ io.on('connection', (socket) => {
 
       sessions.set(sessionId, session);
 
-      // Get all connected users
       const connectedUsers = [session.host, ...session.participants].filter(u => u);
       
-      // Send existing peers to the new user
+     
       const existingPeers = connectedUsers
         .filter(u => u.id !== socket.id && u.peerId)
         .map(u => ({ 
@@ -179,18 +177,16 @@ io.on('connection', (socket) => {
         console.log(`Sending ${existingPeers.length} existing peers to ${userName}`);
         socket.emit('existing-peers', existingPeers);
       }
-      
-      // Notify other users about the new peer
+
       socket.to(sessionId).emit('new-peer', { 
         peerId: peerId, 
         name: userName, 
         isHost: user.isHost 
       });
-      
-      // Update users list for everyone
+   
       io.to(sessionId).emit('users-updated', connectedUsers);
       
-      // Send join success to the new user
+     
       socket.emit('join-success', {
         sessionId,
         isHost: user.isHost,
@@ -250,7 +246,7 @@ io.on('connection', (socket) => {
     if (user) {
       const session = sessions.get(user.sessionId);
       if (session) {
-        // Notify others about disconnection
+     
         socket.to(user.sessionId).emit('peer-disconnected', { 
           peerId: user.peerId,
           userName: user.name 
@@ -258,8 +254,7 @@ io.on('connection', (socket) => {
         
         if (user.isHost) {
           session.host = null;
-          
-          // Promote first participant to host
+   
           if (session.participants.length > 0) {
             const newHost = session.participants.shift();
             newHost.isHost = true;
@@ -307,7 +302,7 @@ function generateSessionId() {
   return crypto.randomUUID(); 
 }
 
-// Cleanup inactive sessions
+
 setInterval(() => {
   const now = new Date();
   for (const [sessionId, session] of sessions.entries()) {

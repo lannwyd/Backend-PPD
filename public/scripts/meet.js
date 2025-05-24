@@ -36,7 +36,6 @@ const roomId = window.location.pathname.split("/").pop();
 
 console.log("Initializing client for room:", roomId);
 
-// Initialize media first
 async function initializeMedia() {
   try {
     localStream = await navigator.mediaDevices.getUserMedia({ 
@@ -53,7 +52,7 @@ async function initializeMedia() {
   }
 }
 
-// Join session after peer ID is ready
+
 peer.on("open", async (id) => {
   console.log("Peer connection opened with ID:", id);
   
@@ -72,7 +71,7 @@ peer.on("open", async (id) => {
   }
 });
 
-// Handle incoming peer calls
+
 peer.on("call", (call) => {
   console.log("Incoming call from:", call.peer);
   
@@ -82,7 +81,7 @@ peer.on("call", (call) => {
     return;
   }
 
-  // Handle screen share calls
+
   if (call.metadata && call.metadata.type === "screen-share") {
     console.log("Incoming screen share from:", call.peer);
     
@@ -109,7 +108,7 @@ peer.on("call", (call) => {
     return;
   }
 
-  // Handle regular video calls
+  
   if (!localStream) {
     console.log("No local stream available to answer call");
     call.close();
@@ -148,7 +147,7 @@ peer.on("call", (call) => {
   });
 });
 
-// Socket event handlers
+
 socket.on("join-success", (data) => {
   console.log("Successfully joined session:", data);
   isHost = data.isHost;
@@ -183,12 +182,11 @@ socket.on("existing-peers", (peerList) => {
   peerList.forEach((peerInfo) => {
     if (peerInfo.peerId !== peer.id) {
       addUserCard(peerInfo.name, peerInfo.peerId, peerInfo.isHost);
-      
-      // Connect to existing peer
+    
       if (localStream) {
         setTimeout(() => {
           connectToPeer(peerInfo.peerId, peerInfo.name);
-        }, 1000); // Small delay to ensure proper connection
+        }, 1000); 
       }
     }
   });
@@ -201,10 +199,7 @@ socket.on("new-peer", (peerInfo) => {
   if (peerInfo.peerId !== peer.id) {
     addUserCard(peerInfo.name, peerInfo.peerId, peerInfo.isHost);
     
-    // Don't initiate connection here - let the new peer call us
-    // This prevents duplicate connections
-    
-    // If we're sharing screen, share it with the new peer
+  
     if (screenStream && isScreenSharing) {
       setTimeout(() => {
         const screenCall = peer.call(peerInfo.peerId, screenStream, {
@@ -266,7 +261,6 @@ socket.on("error", (error) => {
   alert("Error: " + error);
 });
 
-// Helper functions
 function updateHostUI() {
   if (screenShareBtn) {
     screenShareBtn.style.display = isHost ? "block" : "none";
@@ -383,7 +377,7 @@ function updateOnlineCount() {
   onlineCount.textContent = `${count} online`;
 }
 
-// Event listeners
+
 sendMessage.addEventListener("click", () => {
   if (chatInput.value.trim()) {
     socket.emit("chat-message", {
@@ -452,7 +446,7 @@ screenShareBtn.addEventListener("click", () => {
         isScreenSharing = true;
         screenShareBtn.textContent = "Stop Sharing";
         
-        // Show local screen preview
+   
         const myScreen = document.createElement("video");
         myScreen.srcObject = stream;
         myScreen.autoplay = true;
@@ -464,7 +458,7 @@ screenShareBtn.addEventListener("click", () => {
 
         socket.emit("start-screen-share", { sessionId: roomId });
         
-        // Share screen with all connected peers
+     
         Object.keys(peers).forEach((peerId) => {
           const screenCall = peer.call(peerId, stream, {
             metadata: { type: "screen-share" },
@@ -506,7 +500,7 @@ function stopScreenSharing() {
   }
 }
 
-// Error handling
+
 peer.on("error", (err) => {
   console.error("Peer error:", err);
   if (err.type === 'peer-unavailable') {
