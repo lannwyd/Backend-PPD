@@ -19,6 +19,7 @@ import { fileURLToPath } from "url";
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+let isopenport = false;
 
 async function initializeDatabase() {
   try {
@@ -181,6 +182,7 @@ async function flashArduino({ hexbase64, clientId }) {
     flash.on("close", async (code) => {
       if (code === 0) {
         serial.open();
+        isopenport = true;
         await fs.rm(hexDir, { recursive: true, force: true });
         io.to(clients[clientId]).emit("flash-success", "Flash successful.");
       } else {
@@ -427,6 +429,11 @@ io.on("connection", (socket) => {
   // -------------------- Flash and Upload Hex ---------------------
   socket.on("flash-code", async ({ hexbase64, clientId }) => {
     try {
+      if (isopenport) {
+        serial.close();
+        isopenport = false;
+      }
+      
       await flashArduino({ hexbase64, clientId });
     } catch (error) {
       console.error(error);
@@ -435,28 +442,46 @@ io.on("connection", (socket) => {
   });
 
   socket.on("reset-device", async (clientId) => {
+    if(isopenport) {
     serial.close();
+    isopenport = false;
+    }
+    try{
+    
     const hexPath = path.join(__dirname, "reset.hex");
 
     const hexData = await fs.readFile(hexPath);
     const base64Data = hexData.toString("base64");
 
     await flashArduino({ hexbase64: base64Data, clientId});
+    }catch(err){
+      console.error(err);
+      io.to(clients[clientId]).emit("flash-fail", "Server error during reset.");
+    }
   });
 
   socket.on("test-device", async (clientId) => {
+     if(isopenport) {
     serial.close();
-    const hexPath = path.join(__dirname, "test.hex");
+    isopenport = false;
+    }
+    try{   const hexPath = path.join(__dirname, "test.hex");
     const hexData = await fs.readFile(hexPath, "utf8");
     const hexbase64 = hexData.toString("base64");
     await flashArduino({ hexbase64, clientId });
+  }catch(err) {
+      console.error(err);
+      io.to(clients[clientId]).emit("flash-fail", "Server error during test.");
+    }
+    
+ 
   });
 
   //---------------------Serial Monitor---------------------
-  serial.on("open", () => {
+  // serial.on("open", () => {
   
-    io.emit("serial-opened");
-  });
+  //   io.emit("serial-opened");
+  // });
   socket.on("serial-command", ({ clientId, command }) => {
 
 
@@ -471,6 +496,7 @@ io.on("connection", (socket) => {
 
     io.emit("serial-data", data.toString());
   });
+  
 });
 
 // -------------------- Start ---------------------
