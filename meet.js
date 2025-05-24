@@ -60,9 +60,7 @@ app.use('/peerjs', peerServer);
 const sessions = new Map();
 const users = new Map();
 
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'meeting.html'));
-});
+
 
 let user;
 app.post('/create-session', protect, async (req, res) => {
@@ -327,7 +325,7 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, async () => {
   try {
     await initializeDatabase();
-    console.log(`Server running on port ${PORT}`);
+  
   } catch (error) {
     console.error('Failed to start server:', error);
   }
