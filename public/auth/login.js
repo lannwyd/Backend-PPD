@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const signInButton = document.getElementById('Sign_In');
     const errorMessage1 = document.getElementById('error_message1');
     const errorMessage2 = document.getElementById('error_message2');
+    const errorMessage3 = document.getElementById('error_message3');
     const passwordInput = document.getElementById('password');
     const showPass = document.getElementById('show_pass');
     const eyeIcon = showPass.querySelector('img');
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Reset error messages
         errorMessage1.textContent = '';
         errorMessage2.textContent = '';
+        errorMessage3.textContent = '';
 
         const email = document.getElementById('email').value.trim();
         const password = passwordInput.value;
@@ -57,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         if (role === null || role === '') {
-            errorMessage1.textContent = 'Please select your role';
+            errorMessage3.textContent = 'Please select your role';
             return;
         }
 

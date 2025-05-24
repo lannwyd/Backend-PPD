@@ -5,16 +5,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./styles/Style.css">
-    
+
     <title>IoT Remote Lab - Sign-in</title>
 </head>
 
 <body>
     <nav>
         <div class="navbar">
-          <a href="Home.html"> <div class="icon">
-                <img src="./Documents/mic-white.png" alt="IoT Document" width="18">
-            </div></a> 
+            <a href="Home.html">
+                <div class="icon">
+                    <img src="./Documents/mic-white.png" alt="IoT Document" width="18">
+                </div>
+            </a>
             <p>IoT Lab</p>
         </div>
     </nav>
@@ -34,24 +36,28 @@
                     <div class="info">
                         <div class="mail-info">
                             <label for="email"><b>Email</b></label><br>
-                            <input type="email" id="email" name="email" autocomplete="email" placeholder="Enter your email" >
+                            <input type="email" id="email" name="email" autocomplete="email"
+                                placeholder="Enter your email">
                             <p class="error_message" id="error_message1"></p>
                         </div>
                         <div class="password-info">
                             <label for="password"><b>Password</b> </label><br>
                             <div class="pass_show">
-                                <input type="password" id="password" name="password" minlength="8" placeholder="Enter your password" required><br>
-                                <div class="show" id="show_pass"><img src="./Documents/eye-slash-solid.svg" alt="eye" width="18"></div>
+                                <input type="password" id="password" name="password" minlength="8"
+                                    placeholder="Enter your password" required><br>
+                                <div class="show" id="show_pass"><img src="./Documents/eye-slash-solid.svg" alt="eye"
+                                        width="18"></div>
                             </div>
                             <p class="error_message" id="error_message2"></p>
                         </div>
-                        <div class="role-selection">
+                        <div class="role-selection" class="role-info">
                             <label for="role"><b>Role</b></label><br>
-                            <select id="role"  name="role" required>
+                            <select id="role" name="role" required>
                                 <option value="" disabled selected>Select your role</option>
                                 <option value="student">Student</option>
-                                <option value="teacher">Teacher</option>
+                                <option value="teacher">Teacher</option> <!-- Changed from "Professor" to "teacher" -->
                             </select>
+                            <p class="error_message" id="error_message3"></p>
                         </div>
                         <div class="check-remm">
                             <div class="check-box">
@@ -69,9 +75,9 @@
             <div class="last-part">
                 <p id="D_have_acc">
                     Don't have an account?
-                     <p id="sign"><a style="color: #9FEF00;" href="/register">Sign up</a></p>
+                <p id="sign"><a style="color: #9FEF00;" href="/register">Sign up</a></p>
                 </p>
-               
+
             </div>
 
         </div>
