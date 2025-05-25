@@ -40,6 +40,8 @@ async function loadUserProfile() {
             const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
             profilePic.textContent = initials;
             profilePic.style.backgroundImage = '';
+            profilePic.style.backgroundSize = '';
+
         }
 
         const initials = `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
@@ -276,4 +278,28 @@ function setupEventListeners() {
             alert('Failed to logout. Please try again.');
         }
     });
+    
+        document.querySelector('#log_out_btn').addEventListener('click', async function(e) {
+            e.preventDefault();
+
+            try {
+                const response = await fetch('/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+
+                if (response.ok) {
+                    localStorage.removeItem('userRole');
+
+                    window.location.href = '/login';
+                } else {
+                    throw new Error('Logout failed');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                alert('Failed to logout. Please try again.');
+            }
+        });
+    
+
 }

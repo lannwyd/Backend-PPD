@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             const data = await response.json();
+            console.log(data)
 
             if (!response.ok) {
                 throw new Error(data.error || 'Registration failed');
